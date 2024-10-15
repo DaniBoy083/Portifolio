@@ -1,0 +1,81 @@
+body {
+    margin: 0%;
+}
+
+.topo1 {
+    display: flex;
+    text-align: center;
+    padding: 2%;
+    background-color: black;
+    flex-direction: column;
+}
+
+.topo2 {
+    text-align: center;
+    padding: 2%;
+    background-color: black;
+}
+
+.topo3 {
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+    background-color: black;
+}
+
+.meio1 {
+    display: flex;
+    text-align: left;
+    padding: 2%;
+    background-color: gray;
+}
+
+.meio2 {
+    font-family: Arial, Helvetica, sans-serif;
+    color: black;
+    background-color: gray;
+}
+
+.meio3 {
+    padding: 2%;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: gray;
+    text-align: center;
+    display: flex;
+    gap: 50px;
+}
+
+.smeio1 {
+    display: flex;
+    text-align: left;
+    padding: 2%;
+    background-color: white;
+}
+
+.smeio2 {
+    font-family: Arial, Helvetica, sans-serif;
+    color: black;
+    background-color: white;
+}
+
+.smeio3 {
+    padding: 2%;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: white;
+    text-align: center;
+    display: flex;
+    gap: 50px;
+}
+
+.rodape1, .srodape1 {
+    display: flex;
+    text-align: left;
+    padding: 2%;
+    background-color: black;
+    flex-direction: column;
+}
+
+.rodape2, .srodape2 {
+    font-family: Arial, Helvetica, sans-serif;
+    color: gray;
+    background-color: black;
+}
