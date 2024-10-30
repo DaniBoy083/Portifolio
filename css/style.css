@@ -76,6 +76,7 @@ body {
 
 .rodape2, .srodape2 {
     font-family: Arial, Helvetica, sans-serif;
+    font-size: small;
     color: gray;
     background-color: black;
 }
