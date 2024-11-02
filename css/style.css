@@ -1,82 +1,90 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    margin: 0%;
-}
-
-.topo1 {
-    display: flex;
-    text-align: center;
-    padding: 2%;
-    background-color: black;
-    flex-direction: column;
-}
-
-.topo2 {
-    text-align: center;
-    padding: 2%;
-    background-color: black;
-}
-
-.topo3 {
     font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f9f9f9;
+}
+
+header.topo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    background-color: black;
+}
+
+header .topo3 h1 {
     color: white;
-    background-color: black;
 }
 
-.meio1 {
+section.meio {
     display: flex;
-    text-align: left;
-    padding: 2%;
+    padding: 20px;
     background-color: gray;
-}
-
-.meio2 {
-    font-family: Arial, Helvetica, sans-serif;
-    color: black;
-    background-color: gray;
-}
-
-.meio3 {
-    padding: 2%;
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: gray;
-    text-align: center;
-    display: flex;
-    gap: 50px;
-}
-
-.smeio1 {
-    display: flex;
-    text-align: left;
-    padding: 2%;
-    background-color: white;
-}
-
-.smeio2 {
-    font-family: Arial, Helvetica, sans-serif;
-    color: black;
-    background-color: white;
-}
-
-.smeio3 {
-    padding: 2%;
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: white;
-    text-align: center;
-    display: flex;
-    gap: 50px;
-}
-
-.rodape1, .srodape1 {
-    display: flex;
-    text-align: left;
-    padding: 2%;
-    background-color: black;
     flex-direction: column;
 }
 
-.rodape2, .srodape2 {
-    font-family: Arial, Helvetica, sans-serif;
+section.meio h1 {
+    color: black;
+    margin-bottom: 20px;
+}
+
+.linguagens {
+    display: flex;
+    gap: 200px;
+    justify-content: center; 
+}
+
+section.projetos {
+    display: flex;
+    padding: 20px;
+    background-color: white;
+    flex-direction: column;
+}
+
+section.projetos h1 {
+    color: black;
+    margin-bottom: 20px;
+}
+
+.projetos-lista {
+    display: flex;
+    gap: 200px;
+    justify-content: center; 
+}
+
+footer {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background-color: black;
+    color: white;
+    text-align: center;
+}
+
+footer .contato a, footer .desenvolvedor a {
+    color: gray;
+    text-decoration: none;
+}
+
+footer .contato a:hover, footer .desenvolvedor a:hover {
+    text-decoration: underline;
+}
+
+footer .desenvolvedor p {
     font-size: small;
     color: gray;
-    background-color: black;
 }
+
+@media (max-width: 768px) {
+    .meio3, .smeio3 {
+        flex-direction: column; 
+        align-items: center;
+    }
