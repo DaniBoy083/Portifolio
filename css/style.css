@@ -66,7 +66,8 @@ section.linguagens h1 {
     font-size: small;
     display: flex;
     gap: 200px;
-    justify-content: center; 
+    justify-content: center;
+    text-align: center;
 }
 
 section.projetos {
