@@ -49,7 +49,7 @@ main {
     font-size: larger;
 }
 
-section.linguagens-lista {
+section.linguagens {
     background-color: white;
     color: black;
     display: flex;
@@ -57,16 +57,16 @@ section.linguagens-lista {
     flex-direction: column;
 }
 
-section.linguagens-lista h1 {
+section.linguagens h1 {
     margin-bottom: 20px;
     font-size: medium;
 }
 
-.linguagens {
-    text-align: center;
+.linguagens-lista {
     font-size: small;
     display: flex;
-    gap: 100px; 
+    gap: 200px;
+    justify-content: center; 
 }
 
 section.projetos {
