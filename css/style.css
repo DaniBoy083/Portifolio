@@ -99,6 +99,11 @@ section .projeto-link a:hover {
     text-decoration: underline;
 }
 
+.projeto-img {
+    gap: 100px;
+    padding-top: 10px;
+}
+
 section.estudos {
     background-color: white;
     color: black;
@@ -117,6 +122,46 @@ section.estudos h1 {
     display: flex;
     gap: 200px;
     justify-content: center; 
+}
+
+section.certificados {
+    background-color: white;
+    color: black;
+    display: flex;
+    padding: 20px;
+    flex-direction: column;
+}
+
+section.certificados h1 {
+    margin-bottom: 20px;
+    font-size: medium;
+}
+
+.certificados-lista {
+    font-size: small;
+    display: flex;
+    gap: 200px;
+    justify-content: left; 
+}
+
+section.formações {
+    background-color: white;
+    color: black;
+    display: flex;
+    padding: 20px;
+    flex-direction: column;
+}
+
+section.formações h1 {
+    margin-bottom: 20px;
+    font-size: medium;
+}
+
+.formações-lista {
+    font-size: small;
+    display: flex;
+    gap: 200px;
+    justify-content: left; 
 }
 
 section.metas {
