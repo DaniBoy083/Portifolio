@@ -172,6 +172,27 @@ section.metas {
     font-size: small;
 }
 
+section.sobre-a-pagina {
+    background-color: white;
+    color: black;
+    display: flex;
+    padding: 20px;
+    flex-direction: column;
+}
+
+section.sobre-a-pagina h1 {
+    margin-bottom: 20px;
+    font-size: medium;
+}
+
+.linguagens-pagina {
+    font-size: small;
+    display: flex;
+    gap: 200px;
+    justify-content: center;
+    text-align: center;
+}
+
 footer {
     display: flex;
     flex-direction: column;
