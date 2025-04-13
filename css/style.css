@@ -201,12 +201,12 @@ footer {
     color: white;
 }
 
-footer .contato-footer a, footer .desenvolvedor a {
+footer .desenvolvedor a {
     color: gray;
     text-decoration: none;
 }
 
-footer .contato-footer a:hover, footer .desenvolvedor a:hover {
+footer .desenvolvedor a:hover {
     text-decoration: underline;
 }
 
