@@ -68,6 +68,7 @@ section.linguagens h1 {
     gap: 200px;
     justify-content: center;
     text-align: center;
+    flex-wrap: wrap;
 }
 
 section.projetos {
@@ -88,6 +89,7 @@ section.projetos h1 {
     display: flex;
     gap: 200px;
     justify-content: center; 
+    flex-wrap: wrap;
 }
 
 section .projeto-link a {
@@ -122,6 +124,7 @@ section.estudos h1 {
     display: flex;
     gap: 200px;
     justify-content: center; 
+    flex-wrap: wrap;
 }
 
 section.certificados {
@@ -142,6 +145,7 @@ section.certificados h1 {
     display: flex;
     gap: 200px;
     justify-content: left; 
+    flex-wrap: wrap;
 }
 
 section.formações {
@@ -162,6 +166,7 @@ section.formações h1 {
     display: flex;
     gap: 200px;
     justify-content: left; 
+    flex-wrap: wrap;
 }
 
 section.metas {
