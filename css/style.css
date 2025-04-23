@@ -49,7 +49,7 @@ main {
     font-size: larger;
 }
 
-section.linguagens {
+section.linguagens, section.projetos, section.estudos, section.certificados, section.formações, section.sobre-a-pagina {
     background-color: white;
     color: black;
     display: flex;
@@ -57,38 +57,17 @@ section.linguagens {
     flex-direction: column;
 }
 
-section.linguagens h1 {
+section.linguagens h1, section.projetos h1, section.estudos h1, section.certificados h1, section.formações h1, section.sobre-a-pagina h1 {
     margin-bottom: 20px;
     font-size: medium;
 }
 
-.linguagens-lista {
+.linguagens-lista, .projetos-lista, .estudos-lista, .certificados-lista, .formações-lista, .linguagens-pagina {
     font-size: small;
     display: flex;
     gap: 200px;
     justify-content: center;
     text-align: center;
-    flex-wrap: wrap;
-}
-
-section.projetos {
-    background-color: white;
-    color: black;
-    display: flex;
-    padding: 20px;
-    flex-direction: column;
-}
-
-section.projetos h1 {
-    margin-bottom: 20px;
-    font-size: medium;
-}
-
-.projetos-lista {
-    font-size: small;
-    display: flex;
-    gap: 200px;
-    justify-content: center; 
     flex-wrap: wrap;
 }
 
@@ -106,96 +85,12 @@ section .projeto-link a:hover {
     padding-top: 10px;
 }
 
-section.estudos {
-    background-color: white;
-    color: black;
-    display: flex;
-    padding: 20px;
-    flex-direction: column;
-}
-
-section.estudos h1 {
-    margin-bottom: 20px;
-    font-size: medium;
-}
-
-.estudos-lista {
-    font-size: small;
-    display: flex;
-    gap: 200px;
-    justify-content: center; 
-    flex-wrap: wrap;
-}
-
-section.certificados {
-    background-color: white;
-    color: black;
-    display: flex;
-    padding: 20px;
-    flex-direction: column;
-}
-
-section.certificados h1 {
-    margin-bottom: 20px;
-    font-size: medium;
-}
-
-.certificados-lista {
-    font-size: small;
-    display: flex;
-    gap: 200px;
-    justify-content: left; 
-    flex-wrap: wrap;
-}
-
-section.formações {
-    background-color: white;
-    color: black;
-    display: flex;
-    padding: 20px;
-    flex-direction: column;
-}
-
-section.formações h1 {
-    margin-bottom: 20px;
-    font-size: medium;
-}
-
-.formações-lista {
-    font-size: small;
-    display: flex;
-    gap: 200px;
-    justify-content: left; 
-    flex-wrap: wrap;
-}
-
 section.metas {
     padding: 20px;
 }
 
 .sign {
     font-size: small;
-}
-
-section.sobre-a-pagina {
-    background-color: white;
-    color: black;
-    display: flex;
-    padding: 20px;
-    flex-direction: column;
-}
-
-section.sobre-a-pagina h1 {
-    margin-bottom: 20px;
-    font-size: medium;
-}
-
-.linguagens-pagina {
-    font-size: small;
-    display: flex;
-    gap: 200px;
-    justify-content: center;
-    text-align: center;
 }
 
 footer {
