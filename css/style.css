@@ -65,7 +65,7 @@ section.linguagens h1, section.projetos h1, section.estudos h1, section.certific
 .linguagens-lista, .projetos-lista, .estudos-lista, .certificados-lista, .formações-lista, .linguagens-pagina {
     font-size: small;
     display: flex;
-    gap: 200px;
+    gap: 100px;
     justify-content: center;
     text-align: center;
     flex-wrap: wrap;
