@@ -93,6 +93,15 @@ section.metas {
     font-size: small;
 }
 
+section .repositorio-da-pagina a {
+    color: black;
+    text-decoration: none;
+}
+
+section .repositorio-da-pagina a:hover {
+    text-decoration: underline;
+}
+
 footer {
     display: flex;
     flex-direction: column;
