@@ -33,12 +33,12 @@ header .topo-paragrafo {
     font-size: small;
 }
 
-header .contato-topo a {
+header .contato-topo a, header .curriculo a {
     color: gray;
     text-decoration: none;
 }
 
-header .contato-topo a:hover {
+header .contato-topo a:hover, header .curriculo a:hover {
     text-decoration: underline;
 }
 
