@@ -71,7 +71,7 @@ section.linguagens h1, section.projetos h1, section.estudos h1, section.certific
     flex-wrap: wrap;
 }
 
-section .projeto-link a {
+section .projeto-link a { 
     color: black;
     text-decoration: none;
 }
