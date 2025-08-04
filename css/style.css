@@ -5,6 +5,7 @@
 }
 
 body {
+    padding-top: 30px;
     font-family: Arial, Helvetica, sans-serif;
     line-height: 1.6;
     color: #333;
@@ -39,6 +40,33 @@ header .contato-topo a, header .curriculo a {
 }
 
 header .contato-topo a:hover, header .curriculo a:hover {
+    text-decoration: underline;
+}
+
+.barra-de-navegação {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: black;
+    z-index: 1000;
+    padding: 10px 0;
+}
+
+.barra-de-navegação .link-de-navegação {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    list-style: none;
+}
+
+.barra-de-navegação .link-de-navegação a {
+    color: white;
+    text-decoration: none;
+    padding: 5px 10px;
+}
+
+.barra-de-navegação .link-de-navegação a:hover {
     text-decoration: underline;
 }
 
@@ -112,16 +140,16 @@ footer {
     color: white;
 }
 
-footer .desenvolvedor a {
+footer.desenvolvedor a {
     color: gray;
     text-decoration: none;
 }
 
-footer .desenvolvedor a:hover {
+footer.desenvolvedor a:hover {
     text-decoration: underline;
 }
 
-footer .desenvolvedor p {
+footer.desenvolvedor p {
     font-size: small;
     color: gray;
 }
