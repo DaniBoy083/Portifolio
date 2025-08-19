@@ -1,0 +1,1 @@
+window.alert("Bem vindo ao portifolio virtual do desenvolvedor Daniel Costa.");
