@@ -79,7 +79,7 @@ main {
     font-size: larger;
 }
 
-section.linguagens, section.projetos, section.estudos, section.certificados, section.formações, section.sobre-a-pagina {
+section.linguagens, section.frameworks, section.projetos, section.estudos, section.certificados, section.formações, section.sobre-a-pagina {
     border: 0.5rem outset gray;
     border-radius: 12px;
     background-color: white;
@@ -89,12 +89,12 @@ section.linguagens, section.projetos, section.estudos, section.certificados, sec
     flex-direction: column;
 }
 
-section.linguagens h1, section.projetos h1, section.estudos h1, section.certificados h1, section.formações h1, section.sobre-a-pagina h1 {
+section.linguagens h1, section.frameworks h1, section.projetos h1, section.estudos h1, section.certificados h1, section.formações h1, section.sobre-a-pagina h1 {
     margin-bottom: 20px;
     font-size: medium;
 }
 
-.linguagens-lista, .projetos-lista, .estudos-lista, .certificados-lista, .formações-lista, .linguagens-pagina {
+.linguagens-lista, .frameworks-lista, .projetos-lista, .estudos-lista, .certificados-lista, .formações-lista, .linguagens-pagina {
     font-size: small;
     display: flex;
     gap: 100px;
