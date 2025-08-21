@@ -94,7 +94,7 @@ section.linguagens h1, section.frameworks h1, section.bancos-de-dados h1, sectio
     font-size: medium;
 }
 
-.linguagens-lista, .frameworks-lista, .projetos-lista, .estudos-lista, .certificados-lista, .formações-lista, .linguagens-pagina {
+.linguagens-lista, .frameworks-lista, .bancos-de-dados-lista, .projetos-lista, .estudos-lista, .certificados-lista, .formações-lista, .linguagens-pagina {
     font-size: small;
     display: flex;
     gap: 100px;
