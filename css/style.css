@@ -79,7 +79,7 @@ main {
     font-size: larger;
 }
 
-section.linguagens, section.bibliotecas, section.frameworks, section.bancos-de-dados, section.projetos, section.estudos, section.certificados, section.formações, section.sobre-a-pagina {
+section.linguagens, section.bibliotecas, section.frameworks, section.bancos-de-dados, section.virtualizações, section.projetos, section.estudos, section.certificados, section.formações, section.sobre-a-pagina {
     border: 0.5rem outset gray;
     border-radius: 12px;
     background-color: white;
@@ -89,12 +89,12 @@ section.linguagens, section.bibliotecas, section.frameworks, section.bancos-de-d
     flex-direction: column;
 }
 
-section.linguagens h1, section.bibliotecas h1, section.frameworks h1, section.bancos-de-dados h1, section.projetos h1, section.estudos h1, section.certificados h1, section.formações h1, section.sobre-a-pagina h1 {
+section.linguagens h1, section.bibliotecas h1, section.frameworks h1, section.bancos-de-dados h1, section.virtualizações h1, section.projetos h1, section.estudos h1, section.certificados h1, section.formações h1, section.sobre-a-pagina h1 {
     margin-bottom: 20px;
     font-size: medium;
 }
 
-.linguagens-lista, .bibliotecas-lista, .frameworks-lista, .bancos-de-dados-lista, .projetos-lista, .estudos-lista, .certificados-lista, .formações-lista, .linguagens-pagina {
+.linguagens-lista, .bibliotecas-lista, .frameworks-lista, .bancos-de-dados-lista, .virtualização-lista, .projetos-lista, .estudos-lista, .certificados-lista, .formações-lista, .linguagens-pagina {
     font-size: small;
     display: flex;
     gap: 100px;
