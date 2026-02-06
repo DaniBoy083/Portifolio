@@ -1,0 +1,563 @@
+html {
+    scroll-behavior: smooth;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    padding-top: 30px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f5f5;
+}
+
+.barra-de-navegação {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: black;
+    z-index: 1000;
+    padding: 10px 0;
+    max-height: 200px;
+    overflow: auto;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.barra-de-navegação .link-de-navegação {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    list-style: none;
+}
+
+.barra-de-navegação .link-de-navegação a {
+    color: white;
+    text-decoration: none;
+    padding: 5px 10px;
+    transition: all 0.3s ease;
+}
+
+.barra-de-navegação .link-de-navegação a:hover {
+    color: #333;
+    background: white;
+    border-radius: 4px;
+}
+
+header.topo {
+    display: flex;
+    gap: 40px;
+    flex-direction: row;
+    align-items: center;
+    padding: 40px;
+    background-color: black;
+}
+
+#logo {
+    border-radius: 50%;
+    border: 5px solid white;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+#logo:hover {
+    transform: scale(1.05);
+}
+
+header .topo-cabeçalho {
+    color: white;
+    flex: 1;
+}
+
+header .topo-cabeçalho h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+header .topo-cabeçalho p1 {
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    opacity: 0.9;
+}
+
+header .topo-paragrafo {
+    padding-top: 20px;
+    font-size: 1.1rem;
+    opacity: 0.95;
+}
+
+header .contato-topo a, header .curriculo a {
+    color: black;
+    text-decoration: none;
+    display: inline-block;
+    margin-right: 20px;
+    padding: 12px 25px;
+    background: white;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    border: 2px solid white;
+    font-weight: 500;
+}
+
+header .contato-topo {
+    margin-bottom: 15px;
+}
+
+header .curriculo {
+    margin-top: 10px;
+}
+
+header .contato-topo a:hover, header .curriculo a:hover {
+    background: transparent;
+    color: white;
+    text-decoration: none;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+}
+
+header .botao-de-download {
+    background: white;
+    color: black;
+    font-weight: bold;
+}
+
+header .botao-de-download:hover {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+main {
+    background-color: #f5f5f5;
+    color: #333;
+    padding: 40px 30px;
+    font-size: larger;
+}
+
+section.linguagens, section.bibliotecas, section.frameworks, section.bancos-de-dados, section.virtualizações, section.projetos, section.estudos, section.certificados, section.formações, section.sobre-a-pagina {
+    border: none;
+    border-radius: 12px;
+    background: white;
+    color: black;
+    display: flex;
+    padding: 30px;
+    flex-direction: column;
+    margin-bottom: 40px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+section.linguagens:hover, section.bibliotecas:hover, section.frameworks:hover, section.bancos-de-dados:hover, section.virtualizações:hover, section.projetos:hover, section.estudos:hover, section.certificados:hover, section.formações:hover, section.sobre-a-pagina:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+section.linguagens h1, section.bibliotecas h1, section.frameworks h1, section.bancos-de-dados h1, section.virtualizações h1, section.projetos h1, section.estudos h1, section.certificados h1, section.formações h1, section.sobre-a-pagina h1 {
+    margin-bottom: 25px;
+    font-size: 2rem;
+    color: black;
+    border-bottom: 3px solid black;
+    padding-bottom: 15px;
+}
+
+.linguagens-lista, .bibliotecas-lista, .frameworks-lista, .bancos-de-dados-lista, .virtualização-lista, .estudos-lista, .certificados-lista, .formações-lista, .linguagens-pagina {
+    font-size: small;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 30px;
+    justify-content: center;
+    text-align: center;
+    flex-wrap: wrap;
+}
+
+.linguagem, .biblioteca, .framework, .banco-de-dado, .virtualização, .estudo, .certificado, .formação, .linguagem-pagina {
+    padding: 20px;
+    border-radius: 12px;
+    background: #f9f9f9;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    border: 2px solid #e0e0e0;
+}
+
+.linguagem:hover, .biblioteca:hover, .framework:hover, .banco-de-dado:hover, .virtualização:hover, .estudo:hover, .certificado:hover, .formação:hover, .linguagem-pagina:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    background: white;
+    border-color: black;
+}
+
+.linguagem img, .biblioteca img, .framework img, .banco-de-dado img, .virtualização img, .estudo img, .linguagem-pagina img {
+    transition: transform 0.3s ease;
+}
+
+.linguagem:hover img, .biblioteca:hover img, .framework:hover img, .banco-de-dado:hover img, .virtualização:hover img, .estudo:hover img, .linguagem-pagina:hover img {
+    transform: scale(1.1);
+}
+
+.linguagem h2, .biblioteca h2, .framework h2, .banco-de-dado h2, .virtualização h2, .estudo h2, .certificado h2, .formação h2, .linguagem-pagina h2 {
+    color: #333;
+    font-size: 0.95rem;
+    margin-top: 10px;
+}
+
+.projetos-lista {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.projeto {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border: 2px solid #e0e0e0;
+}
+
+.projeto:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    border-color: black;
+}
+
+.projeto h2 {
+    background: black;
+    color: white;
+    padding: 20px;
+    margin: 0;
+    font-size: 1.3rem;
+}
+
+.projeto > p {
+    padding: 20px 20px 10px 20px;
+    color: #555;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    flex-grow: 1;
+}
+
+.projeto-link {
+    padding: 10px 20px;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+section .projeto-link a {
+    color: white;
+    text-decoration: none;
+    background: black;
+    padding: 10px 20px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+section .projeto-link a:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    text-decoration: none;
+    background: #333;
+}
+
+.projeto-img {
+    padding: 15px 20px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+    border-top: 1px solid #f0f0f0;
+    background: #f9f9f9;
+}
+
+.projeto-img img {
+    transition: transform 0.3s ease;
+    object-fit: contain;
+}
+
+.projeto-img img:hover {
+    transform: scale(1.1);
+}
+
+section.metas {
+    padding: 40px;
+    background: black;
+    color: white;
+    text-align: center;
+    border-radius: 12px;
+    margin-bottom: 40px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.meta h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    line-height: 1.8;
+}
+
+.sign {
+    font-size: 1.1rem;
+    margin-top: 20px;
+    font-weight: 500;
+}
+
+section .repositorio-da-pagina {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+section .repositorio-da-pagina a {
+    color: black;
+    text-decoration: none;
+    background: white;
+    padding: 12px 30px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+section .repositorio-da-pagina a:hover {
+    text-decoration: none;
+    background: black;
+    color: white;
+}
+
+footer {
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    background-color: black;
+    color: white;
+    border-top: 2px solid #333;
+    text-align: center;
+}
+
+footer .desenvolvedor {
+    list-style: none;
+    padding: 0;
+}
+
+footer .desenvolvedor ol {
+    list-style: none;
+    padding: 10px 0;
+    font-size: 0.95rem;
+}
+
+footer .desenvolvedor a {
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+footer .desenvolvedor a:hover {
+    color: #aaa;
+    text-decoration: underline;
+}
+
+footer .desenvolvedor p {
+    font-size: 0.95rem;
+    color: #aaa;
+}
+
+/* ===== ESTILOS DO MODAL ===== */
+.modal-overlay {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-overlay.fechando {
+    animation: fadeOut 0.3s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+.modal-conteudo {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    max-width: 500px;
+    width: 90%;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 2px solid #f0f0f0;
+    background: black;
+    border-radius: 12px 12px 0 0;
+    color: white;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.modal-fechar {
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: white;
+    transition: transform 0.2s ease;
+}
+
+.modal-fechar:hover {
+    transform: scale(1.2);
+}
+
+.modal-body {
+    padding: 20px;
+    color: #333;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 15px 20px;
+    border-top: 1px solid #f0f0f0;
+    background-color: #f9f9f9;
+    border-radius: 0 0 12px 12px;
+}
+
+.modal-botao-ok {
+    padding: 10px 30px;
+    background: black;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.modal-botao-ok:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 768px) {
+    header.topo {
+        flex-direction: column;
+        text-align: center;
+        padding: 30px 20px;
+        gap: 20px;
+        margin-top: 50px;
+    }
+
+    header .topo-cabeçalho h1 {
+        font-size: 2rem;
+    }
+
+    header .topo-cabeçalho p1 {
+        font-size: 1.2rem;
+    }
+
+    .barra-de-navegação .link-de-navegação {
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    section.linguagens, section.bibliotecas, section.frameworks, section.bancos-de-dados, section.virtualizações, section.projetos, section.estudos, section.certificados, section.formações, section.sobre-a-pagina {
+        padding: 20px;
+    }
+
+    .linguagens-lista, .bibliotecas-lista, .frameworks-lista, .bancos-de-dados-lista, .virtualização-lista, .estudos-lista, .certificados-lista, .formações-lista, .linguagens-pagina {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 15px;
+    }
+
+    .projetos-lista {
+        grid-template-columns: 1fr;
+    }
+
+    main {
+        padding: 20px 15px;
+    }
+
+    section.metas {
+        padding: 20px;
+    }
+
+    .modal-conteudo {
+        width: 95%;
+    }
+}
+
+@media (max-width: 480px) {
+    header .topo-cabeçalho h1 {
+        font-size: 1.5rem;
+    }
+
+    header .topo-cabeçalho p1 {
+        font-size: 1rem;
+    }
+
+    .modal-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .projetos-lista {
+        gap: 15px;
+    }
+}
