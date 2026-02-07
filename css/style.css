@@ -89,6 +89,7 @@ header .topo-cabeçalho p1 {
 
 header .topo-paragrafo {
     padding-top: 20px;
+    margin-bottom: 30px;
     font-size: 1.1rem;
     opacity: 0.95;
 }
