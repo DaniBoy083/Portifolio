@@ -296,6 +296,22 @@ section .projeto-link a:hover {
     transform: scale(1.1);
 }
 
+/* Aumentar apenas as screenshots dos projetos */
+.projeto .projeto-img img.screenshot {
+    width: 480px;
+    height: auto;
+    max-width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+@media (max-width: 768px) {
+    .projeto .projeto-img img.screenshot {
+        width: 100%;
+        height: auto;
+    }
+}
+
 section.metas {
     padding: 40px;
     background: black;
@@ -378,124 +394,6 @@ footer .desenvolvedor p {
     color: #aaa;
 }
 
-/* ===== ESTILOS DO MODAL ===== */
-.modal-overlay {
-    display: flex;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-    animation: fadeIn 0.3s ease-in-out;
-}
-
-.modal-overlay.fechando {
-    animation: fadeOut 0.3s ease-in-out forwards;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes fadeOut {
-    from {
-        opacity: 1;
-    }
-    to {
-        opacity: 0;
-    }
-}
-
-.modal-conteudo {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    max-width: 500px;
-    width: 90%;
-    animation: slideUp 0.3s ease-out;
-}
-
-@keyframes slideUp {
-    from {
-        transform: translateY(50px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    border-bottom: 2px solid #f0f0f0;
-    background: black;
-    border-radius: 12px 12px 0 0;
-    color: white;
-}
-
-.modal-header h2 {
-    margin: 0;
-    font-size: 1.5rem;
-}
-
-.modal-fechar {
-    background: none;
-    border: none;
-    font-size: 28px;
-    cursor: pointer;
-    color: white;
-    transition: transform 0.2s ease;
-}
-
-.modal-fechar:hover {
-    transform: scale(1.2);
-}
-
-.modal-body {
-    padding: 20px;
-    color: #333;
-    font-size: 1rem;
-    line-height: 1.6;
-}
-
-.modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    padding: 15px 20px;
-    border-top: 1px solid #f0f0f0;
-    background-color: #f9f9f9;
-    border-radius: 0 0 12px 12px;
-}
-
-.modal-botao-ok {
-    padding: 10px 30px;
-    background: black;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.modal-botao-ok:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
 /* ===== RESPONSIVIDADE ===== */
 @media (max-width: 768px) {
     header.topo {
@@ -540,9 +438,6 @@ footer .desenvolvedor p {
         padding: 20px;
     }
 
-    .modal-conteudo {
-        width: 95%;
-    }
 }
 
 @media (max-width: 480px) {
@@ -552,10 +447,6 @@ footer .desenvolvedor p {
 
     header .topo-cabeçalho p1 {
         font-size: 1rem;
-    }
-
-    .modal-header h2 {
-        font-size: 1.2rem;
     }
 
     .projetos-lista {
