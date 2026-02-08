@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="img/Placeholders/laptop logo.png">
     <link rel="stylesheet" href="css/style.css">
-    <script src="src/alerts.ts"></script>
+    <script src="dist/alerts.js"></script>
     <title>Portfólio | Daniel Costa</title>
 </head>
 <body>
+    <script src="dist/contact.js"></script>
     <nav id="barra-de-navegação" class="barra-de-navegação">
         <ul class="link-de-navegação">
             <li><a href="#formações">Formações</a></li>
@@ -90,11 +91,6 @@
                     <img src="img/Bibliotecas/PYSIMPLEGUI LOGO PB.png" alt="Logo da biblioteca grafica PySimpleGUI" width="100" height="75">
                     <h2>PySimpleGUI</h2>
                     <p2>Interfaces gráficas em Python</p2>
-                </div>
-                <div class="biblioteca">
-                    <img src="img/Bibliotecas/React-Logo-Pb.png" alt="Logo da biblioteca React" width="100" height="100">
-                    <h2>React</h2>
-                    <p2>Desenvolvimento de interfaces dinâmicas</p2>
                 </div>
             </div>
         </section>
@@ -308,6 +304,18 @@
             </div>
         </section>
     </main>
+    <section id="contato" class="contato-section">
+        <h2>Contato</h2>
+        <form id="contact-form" class="contato-form">
+            <label for="contact-name">Nome</label>
+            <input id="contact-name" name="name" type="text" required>
+            <label for="contact-subject">Assunto</label>
+            <input id="contact-subject" name="subject" type="text">
+            <label for="contact-message">Mensagem</label>
+            <textarea id="contact-message" name="message" rows="6" required></textarea>
+            <button type="submit">Enviar</button>
+        </form>
+    </section>
     <footer>
         <div id="sobre" class="desenvolvedor">
             <ol><p>Página desenvolvida por Daniel Costa Carvalho Martins</p></ol>
@@ -315,5 +323,6 @@
             <ol><a href="https://agregadordelinksbydanielcosta.netlify.app" target="_blank">Saiba mais</a></ol>
         </div>
     </footer>
+</footer>
 </body>
 </html>
