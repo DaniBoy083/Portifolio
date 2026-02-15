@@ -138,10 +138,6 @@ main {
     font-size: larger;
 }
 
-.atualização {
-    color: black;
-}
-
 section.linguagens, section.bibliotecas, section.frameworks, section.bancos-de-dados, section.virtualizações, section.projetos, section.estudos, section.certificados, section.formações, section.sobre-a-pagina {
     border: none;
     border-radius: 12px;
