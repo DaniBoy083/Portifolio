@@ -1,3 +1,4 @@
+"use strict";
 function mostrarAlerta(mensagem) {
     window.alert(mensagem);
 }
