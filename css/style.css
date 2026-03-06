@@ -54,8 +54,13 @@ header.topo {
     gap: 40px;
     flex-direction: row;
     align-items: center;
+    justify-content: center;
     padding: 40px;
     background-color: black;
+}
+
+header .topo-foto {
+    flex-shrink: 0;
 }
 
 #logo {
@@ -72,6 +77,7 @@ header.topo {
 header .topo-cabeçalho {
     color: white;
     flex: 1;
+    max-width: 850px;
 }
 
 header .topo-cabeçalho h1 {
@@ -92,7 +98,7 @@ header .topo-paragrafo {
     opacity: 0.95;
 }
 
-header .contato-topo a, header .curriculo a {
+header .topo-acoes a {
     color: black;
     text-decoration: none;
     display: inline-block;
@@ -107,17 +113,14 @@ header .contato-topo a, header .curriculo a {
     font-weight: 500;
 }
 
-header .contato-topo {
+header .topo-acoes {
     display: flex;
-    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: flex-start;
 }
 
-header .curriculo {
-    display: flex;
-    margin-top: 10px;
-}
-
-header .contato-topo a:hover, header .curriculo a:hover {
+header .topo-acoes a:hover {
     background: transparent;
     color: white;
     text-decoration: none;
@@ -289,6 +292,16 @@ section .projeto-link a:hover {
     background: #f9f9f9;
 }
 
+.projeto .projeto-img:first-of-type {
+    min-height: 90px;
+}
+
+.projeto .projeto-img:first-of-type img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
 .projeto-img img {
     transition: transform 0.3s ease;
     object-fit: contain;
@@ -300,9 +313,11 @@ section .projeto-link a:hover {
 
 /* Aumentar apenas as screenshots dos projetos */
 .projeto .projeto-img img.screenshot {
-    width: 480px;
+    width: 100%;
+    max-width: 360px;
+    aspect-ratio: 16 / 9;
     height: auto;
-    max-width: 100%;
+    object-fit: cover;
     border-radius: 8px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
@@ -499,8 +514,7 @@ footer .desenvolvedor p {
         font-size: 1.2rem;
     }
 
-    header .contato-topo,
-    header .curriculo {
+    header .topo-acoes {
         justify-content: center;
     }
 
