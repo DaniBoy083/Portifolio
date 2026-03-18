@@ -1,4 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const toastApi = (window as Window & {
+        showToast?: (message: string, type?: 'info' | 'success' | 'error', duration?: number) => void;
+    }).showToast;
+
+    const notify = (message: string, type: 'info' | 'success' | 'error' = 'info') => {
+        if (toastApi) {
+            toastApi(message, type);
+        } else {
+            console.warn(message);
+        }
+    };
+
     const form = document.getElementById('contact-form') as HTMLFormElement | null;
     if (!form) return;
 
@@ -22,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const finalSubject = subject || `Contato via portfólio: ${name || 'visitante'}`;
 
         if (!name || !message) {
-            window.alert('Preencha nome e mensagem antes de enviar.');
+            notify('Preencha nome e mensagem antes de enviar.', 'error');
             return;
         }
 
@@ -39,9 +51,9 @@ document.addEventListener('DOMContentLoaded', () => {
         request.onload = () => {
             if (request.status >= 200 && request.status < 300) {
                 form.reset();
-                window.alert('Mensagem enviada com sucesso!');
+                notify('Mensagem enviada com sucesso!', 'success');
             } else {
-                window.alert('Não foi possível enviar agora. Tente novamente em instantes.');
+                notify('Nao foi possivel enviar agora. Tente novamente em instantes.', 'error');
             }
 
             if (submitButton) {
@@ -51,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         request.onerror = () => {
-            window.alert('Não foi possível enviar agora. Tente novamente em instantes.');
+            notify('Nao foi possivel enviar agora. Tente novamente em instantes.', 'error');
 
             if (submitButton) {
                 submitButton.disabled = false;

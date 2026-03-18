@@ -1,5 +1,15 @@
 "use strict";
 document.addEventListener('DOMContentLoaded', function () {
+    var toastApi = window.showToast;
+    var notify = function (message, type) {
+        if (type === void 0) { type = 'info'; }
+        if (toastApi) {
+            toastApi(message, type);
+        }
+        else {
+            console.warn(message);
+        }
+    };
     var form = document.getElementById('contact-form');
     if (!form)
         return;
@@ -17,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var to = recipient || 'danielcostacarvalhomartins06@gmail.com';
         var finalSubject = subject || "Contato via portf\u00F3lio: ".concat(name || 'visitante');
         if (!name || !message) {
-            window.alert('Preencha nome e mensagem antes de enviar.');
+            notify('Preencha nome e mensagem antes de enviar.', 'error');
             return;
         }
         if (submitButton) {
@@ -31,10 +41,10 @@ document.addEventListener('DOMContentLoaded', function () {
         request.onload = function () {
             if (request.status >= 200 && request.status < 300) {
                 form.reset();
-                window.alert('Mensagem enviada com sucesso!');
+                notify('Mensagem enviada com sucesso!', 'success');
             }
             else {
-                window.alert('Não foi possível enviar agora. Tente novamente em instantes.');
+                notify('Nao foi possivel enviar agora. Tente novamente em instantes.', 'error');
             }
             if (submitButton) {
                 submitButton.disabled = false;
@@ -42,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         };
         request.onerror = function () {
-            window.alert('Não foi possível enviar agora. Tente novamente em instantes.');
+            notify('Nao foi possivel enviar agora. Tente novamente em instantes.', 'error');
             if (submitButton) {
                 submitButton.disabled = false;
                 submitButton.textContent = 'Enviar';
