@@ -1,8 +1,7 @@
 "use strict";
-document.addEventListener('DOMContentLoaded', function () {
-    var toastApi = window.showToast;
-    var notify = function (message, type) {
-        if (type === void 0) { type = 'info'; }
+document.addEventListener('DOMContentLoaded', () => {
+    const toastApi = window.showToast;
+    const notify = (message, type = 'info') => {
         if (toastApi) {
             toastApi(message, type);
         }
@@ -10,22 +9,22 @@ document.addEventListener('DOMContentLoaded', function () {
             console.warn(message);
         }
     };
-    var form = document.getElementById('contact-form');
+    const form = document.getElementById('contact-form');
     if (!form)
         return;
-    var submitButton = form.querySelector('button[type="submit"]');
-    form.addEventListener('submit', function (e) {
+    const submitButton = form.querySelector('button[type="submit"]');
+    form.addEventListener('submit', (e) => {
         e.preventDefault();
-        var nameInput = document.getElementById('contact-name');
-        var subjectInput = document.getElementById('contact-subject');
-        var messageInput = document.getElementById('contact-message');
-        var name = nameInput ? nameInput.value.trim() : '';
-        var subject = subjectInput ? subjectInput.value.trim() : '';
-        var message = messageInput ? messageInput.value.trim() : '';
-        var footerMailAnchor = document.querySelector('footer a[href^="mailto:"]');
-        var recipient = footerMailAnchor ? (footerMailAnchor.getAttribute('href') || '').replace(/^mailto:/, '') : '';
-        var to = recipient || 'danielcostacarvalhomartins06@gmail.com';
-        var finalSubject = subject || "Contato via portf\u00F3lio: ".concat(name || 'visitante');
+        const nameInput = document.getElementById('contact-name');
+        const subjectInput = document.getElementById('contact-subject');
+        const messageInput = document.getElementById('contact-message');
+        const name = nameInput ? nameInput.value.trim() : '';
+        const subject = subjectInput ? subjectInput.value.trim() : '';
+        const message = messageInput ? messageInput.value.trim() : '';
+        const footerMailAnchor = document.querySelector('footer a[href^="mailto:"]');
+        const recipient = footerMailAnchor ? (footerMailAnchor.getAttribute('href') || '').replace(/^mailto:/, '') : '';
+        const to = recipient || 'danielcostacarvalhomartins06@gmail.com';
+        const finalSubject = subject || `Contato via portfólio: ${name || 'visitante'}`;
         if (!name || !message) {
             notify('Preencha nome e mensagem antes de enviar.', 'error');
             return;
@@ -34,11 +33,11 @@ document.addEventListener('DOMContentLoaded', function () {
             submitButton.disabled = true;
             submitButton.textContent = 'Enviando...';
         }
-        var request = new XMLHttpRequest();
-        request.open('POST', "https://formsubmit.co/ajax/".concat(encodeURIComponent(to)));
+        const request = new XMLHttpRequest();
+        request.open('POST', `https://formsubmit.co/ajax/${encodeURIComponent(to)}`);
         request.setRequestHeader('Content-Type', 'application/json');
         request.setRequestHeader('Accept', 'application/json');
-        request.onload = function () {
+        request.onload = () => {
             if (request.status >= 200 && request.status < 300) {
                 form.reset();
                 notify('Mensagem enviada com sucesso!', 'success');
@@ -51,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 submitButton.textContent = 'Enviar';
             }
         };
-        request.onerror = function () {
+        request.onerror = () => {
             notify('Nao foi possivel enviar agora. Tente novamente em instantes.', 'error');
             if (submitButton) {
                 submitButton.disabled = false;
@@ -59,9 +58,9 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         };
         request.send(JSON.stringify({
-            name: name,
+            name,
             subject: finalSubject,
-            message: message,
+            message,
             _subject: finalSubject,
             _captcha: 'false'
         }));
