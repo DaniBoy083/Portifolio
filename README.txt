@@ -25,6 +25,21 @@ Links:
 - Repositorio: https://github.com/DaniBoy083/Portifolio
 - Portfolio: https://portifoliodanielcosta.netlify.app
 
+GERACAO AUTOMATICA DE CURRICULO
+
+- O botao "Gerar curriculo inteligente" (na secao inicial do site) gera curriculo automaticamente.
+- Ao clicar, o sistema pergunta o modo:
+	- OK: curriculo completo
+	- Cancelar: curriculo curto
+- Fontes usadas no gerador:
+	- Dados do proprio workspace (nome, resumo, formacao, skills, projetos e certificacoes exibidos na pagina)
+	- GitHub publico (usuario, seguidores, quantidade de repositorios e repositorios em destaque)
+	- LinkedIn (link publico presente na pagina)
+- Saida: download local de dois arquivos por geracao:
+	- nome-modo-aaaa-mm-dd.md
+	- nome-modo-aaaa-mm-dd.txt
+- Observacao: a API publica do LinkedIn nao e consultada diretamente; o gerador referencia o link do perfil e permite complemento manual no documento final.
+
 Build:
 1. Execute npm install
 2. Execute npm run build
