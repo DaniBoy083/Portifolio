@@ -1,3 +1,4 @@
+"use strict";
 function parseDate(value) {
     if (!value) {
         return null;
@@ -36,5 +37,24 @@ function updateLastUpdatedLabel() {
     label.textContent = formatLastUpdated(date);
     label.setAttribute('data-update-source', source);
 }
-document.addEventListener('DOMContentLoaded', updateLastUpdatedLabel);
-export {};
+function getCurrentAcademicSemester(baseSemester, baseYear, baseMonth) {
+    const now = new Date();
+    const totalMonthsDiff = (now.getFullYear() - baseYear) * 12 + (now.getMonth() - baseMonth);
+    const semesterSteps = Math.max(0, Math.floor(totalMonthsDiff / 6));
+    return Math.min(10, baseSemester + semesterSteps);
+}
+function updateCurrentSemesterLabel() {
+    const label = document.getElementById('semestre-atual');
+    if (!label) {
+        return;
+    }
+    const baseSemester = Number.parseInt(label.dataset.baseSemester || '5', 10);
+    const baseYear = Number.parseInt(label.dataset.baseYear || '2026', 10);
+    const baseMonth = Number.parseInt(label.dataset.baseMonth || '0', 10);
+    const currentSemester = getCurrentAcademicSemester(baseSemester, baseYear, baseMonth);
+    label.textContent = `Semestre atual: ${currentSemester}º semestre`;
+}
+document.addEventListener('DOMContentLoaded', () => {
+    updateLastUpdatedLabel();
+    updateCurrentSemesterLabel();
+});

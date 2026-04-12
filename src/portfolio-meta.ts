@@ -1,10 +1,8 @@
 type LastUpdateSource = 'manual' | 'git' | 'document';
 
-declare global {
-    interface Window {
-        __PORTFOLIO_LAST_COMMIT_DATE__?: string;
-        __PORTFOLIO_BUILD_DATE__?: string;
-    }
+interface Window {
+    __PORTFOLIO_LAST_COMMIT_DATE__?: string;
+    __PORTFOLIO_BUILD_DATE__?: string;
 }
 
 function parseDate(value: string | null | undefined): Date | null {
@@ -55,6 +53,28 @@ function updateLastUpdatedLabel(): void {
     label.setAttribute('data-update-source', source);
 }
 
-document.addEventListener('DOMContentLoaded', updateLastUpdatedLabel);
+function getCurrentAcademicSemester(baseSemester: number, baseYear: number, baseMonth: number): number {
+    const now = new Date();
+    const totalMonthsDiff = (now.getFullYear() - baseYear) * 12 + (now.getMonth() - baseMonth);
+    const semesterSteps = Math.max(0, Math.floor(totalMonthsDiff / 6));
+    return Math.min(10, baseSemester + semesterSteps);
+}
 
-export {};
+function updateCurrentSemesterLabel(): void {
+    const label = document.getElementById('semestre-atual');
+    if (!label) {
+        return;
+    }
+
+    const baseSemester = Number.parseInt(label.dataset.baseSemester || '5', 10);
+    const baseYear = Number.parseInt(label.dataset.baseYear || '2026', 10);
+    const baseMonth = Number.parseInt(label.dataset.baseMonth || '0', 10);
+    const currentSemester = getCurrentAcademicSemester(baseSemester, baseYear, baseMonth);
+
+    label.textContent = `Semestre atual: ${currentSemester}º semestre`;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    updateLastUpdatedLabel();
+    updateCurrentSemesterLabel();
+});

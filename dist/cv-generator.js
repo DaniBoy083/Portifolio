@@ -368,10 +368,10 @@ async function drawCurriculumPdf(snapshot, mode, fileName) {
         month: '2-digit',
         year: 'numeric'
     }).format(new Date());
-    const period = getCurrentAcademicPeriod(5, 2026, 0);
+    const semester = getCurrentAcademicPeriod(5, 2026, 0);
     const formationItems = [
         'Ensino Médio completo',
-        `Cursando Ciências da Computação no Centro Universitário de João Pessoa - ${period}º período.`
+        `Cursando Ciências da Computação no Centro Universitário de João Pessoa - ${semester}º semestre.`
     ];
     const professionalExperienceItems = [
         'Desenvolvedor freelancer - Atualmente.',
