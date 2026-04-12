@@ -28,6 +28,9 @@ Links:
 GERACAO AUTOMATICA DE CURRICULO
 
 - O botao "Gerar curriculo inteligente" (na secao inicial do site) gera curriculo automaticamente.
+- O PDF gerado segue layout estruturado de curriculo (cabecalho, secoes e hierarquia visual) inspirado no modelo da pasta docs.
+- O PDF inclui anexos fotograficos dos certificados ao final do documento, usando as imagens da secao Certificados da pagina.
+- Modo hard de anexos: no build, as imagens da pasta img/Certificados sao embutidas em base64 e priorizadas no PDF.
 - Ao clicar, o sistema pergunta o modo:
 	- OK: curriculo completo
 	- Cancelar: curriculo curto
@@ -35,10 +38,10 @@ GERACAO AUTOMATICA DE CURRICULO
 	- Dados do proprio workspace (nome, resumo, formacao, skills, projetos e certificacoes exibidos na pagina)
 	- GitHub publico (usuario, seguidores, quantidade de repositorios e repositorios em destaque)
 	- LinkedIn (link publico presente na pagina)
-- Saida: download local de dois arquivos por geracao:
-	- nome-modo-aaaa-mm-dd.md
-	- nome-modo-aaaa-mm-dd.txt
+- Saida: download local de um arquivo por geracao:
+	- nome-modo-aaaa-mm-dd.pdf
 - Observacao: a API publica do LinkedIn nao e consultada diretamente; o gerador referencia o link do perfil e permite complemento manual no documento final.
+- Modo de emergencia da foto: o build embute img/Placeholders/minhafoto.(jpg|jpeg|png|webp) em base64 dentro de dist/build-meta.js para fallback 100% local no PDF.
 
 Build:
 1. Execute npm install
