@@ -6,6 +6,8 @@
     <link rel="icon" type="image/png" href="img/Placeholders/laptop logo.png">
     <link rel="stylesheet" href="css/style.css">
     <script src="dist/alerts.js"></script>
+    <script src="dist/build-meta.js"></script>
+    <script src="dist/portfolio-meta.js"></script>
     <title>Portfólio | Daniel Costa</title>
 </head>
 <body>
@@ -40,7 +42,7 @@
         </div>
     </header>
     <main>
-        <h4>Ultima atualização: 06/04/2026</h4>
+        <h4 id="ultima-atualizacao" class="ultima-atualizacao" data-manual-date="">Ultima atualização</h4>
         <section id="formações" class="formações">
             <h1>Formações</h1>
             <div class="formações-lista">
@@ -220,20 +222,6 @@
                     </div>
                 </div>
                 <div class="projeto">
-                    <h2>Agregador de links</h2>
-                    <p>Agregador de multiplos links desenvolvido em HTML e CSS para redes sociais.</p>
-                    <div class="projeto-link">
-                        <a href="https://agregadordelinksbydanielcosta.netlify.app">agregadordelinksbydanielcosta</a>
-                    </div>
-                    <div class="projeto-img">
-                        <img src="https://cdn.simpleicons.org/html5/ffffff" alt="Logo da linguagem HTML" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
-                        <img src="https://cdn.simpleicons.org/css/ffffff" alt="Logo da linguagem CSS" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
-                    </div>
-                    <div class="projeto-img">
-                        <img class="screenshot" src="img/Projetos/Agregador de links.png" alt="Foto da home page do projeto" width="360" height="180">
-                    </div>
-                </div>
-                <div class="projeto">
                     <h2>Plataforma de saúde integrada</h2>
                     <p>Plataforma de saúde integrada a fim de fornecer contato com profissionais da area, ajudando na qualidade de vida de pessoas que se encontram em vulnerabilidade social e que possuem alguma deficiencia, junto a instituição AC Social, buscando incluir seus usuarios a tratamentos de qualidade.</p>
                     <div class="projeto-link">
@@ -246,6 +234,20 @@
                     </div>
                     <div class="projeto-img">
                         <img class="screenshot" src="img/Projetos/AC mais saude pra voce.png" alt="Foto da home page do projeto" width="360" height="180">
+                    </div>
+                </div>
+                <div class="projeto">
+                    <h2>Agenda digital</h2>
+                    <p>Projeto real de agenda digital institucional para gerenciamento de atendimentos institucionais da OSC AC Social</p>
+                    <div class="projeto-img">
+                        <img src="https://cdn.simpleicons.org/next.js/ffffff" alt="Logo do framework Next.js" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
+                        <img src="https://cdn.simpleicons.org/react/ffffff" alt="Logo da biblioteca React" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
+                        <img src="https://cdn.simpleicons.org/typescript/ffffff" alt="Logo da linguagem Typescript" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
+                        <img src="https://cdn.simpleicons.org/tailwindcss/ffffff" alt="Logo do framework Tailwind CSS" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
+                        <img src="https://cdn.simpleicons.org/postgresql/ffffff" alt="Logo do banco de dados PostgreSQL" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
+                    </div>
+                    <div class="projeto-img">
+                        <img class="screenshot" src="img/Projetos/agendadigitalacsocial.jpeg" alt="Foto da home page do projeto" width="360" height="180">
                     </div>
                 </div>
                 <div class="projeto">
@@ -268,6 +270,20 @@
                     </div>
                     <div class="projeto-img">
                         <img class="screenshot" src="img/Projetos/analise de dados.jpeg" alt="Preview do portal consolidado de analise de dados da AC Social" width="360" height="180">
+                    </div>
+                </div>
+                <div class="projeto">
+                    <h2>Marcondes Ótica | Digital framework</h2>
+                    <p>Projeto real para a ótica Marcondes, onde desenvolvi um framework digital completo para a empresa, incluindo um site institucional, um sistema de gerenciamento de estoque e vendas, e uma plataforma de e-commerce integrada.</p>
+                    <div class="projeto-img">
+                        <img src="https://cdn.simpleicons.org/next.js/ffffff" alt="Logo do framework Next.js" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
+                        <img src="https://cdn.simpleicons.org/react/ffffff" alt="Logo da biblioteca React" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
+                        <img src="https://cdn.simpleicons.org/typescript/ffffff" alt="Logo da linguagem Typescript" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
+                        <img src="https://cdn.simpleicons.org/tailwindcss/ffffff" alt="Logo do framework Tailwind CSS" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
+                        <img src="https://cdn.simpleicons.org/postgresql/ffffff" alt="Logo do banco de dados PostgreSQL" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
+                    </div>
+                    <div class="projeto-img">
+                        <img class="screenshot" src="img/Projetos/marcondes otica digital framework.jpeg" alt="Foto da home page do projeto" width="360" height="180">
                     </div>
                 </div>
                 <div class="projeto">
@@ -323,65 +339,6 @@
                     </div>
                     <div class="projeto-img">
                         <img class="screenshot" src="img/Projetos/agregador + firebase.jpeg" alt="Foto da home page do projeto" width="360" height="180">
-                    </div>
-                </div>
-                <div class="projeto">
-                    <h2>eDevComerce</h2>
-                    <p>E-comerce full-stack desenvolvido com React, Typescript, Javascript, Tailwind CSS usando uma API de back-end para gerenciar o banco de dados de produtos da aplicação.</p>
-                    <div class="projeto-link">
-                        <a href="https://e-dev-comerce.vercel.app">edevcomerce.vercel.app</a>
-                    </div>
-                    <div class="projeto-link">
-                        <a href="https://github.com/DaniBoy083/eDevComerce">github.com | aplicação</a>
-                    </div>
-                    <div class="projeto-link">
-                        <a href="https://github.com/DaniBoy083/project_data">github.com | API</a>
-                    </div>
-                    <div class="projeto-img">
-                        <img src="https://cdn.simpleicons.org/react/ffffff" alt="Logo da biblioteca React" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
-                        <img src="https://cdn.simpleicons.org/typescript/ffffff" alt="Logo da linguagem Typescript" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
-                        <img src="https://cdn.simpleicons.org/javascript/ffffff" alt="Logo da linguagem Javascript" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
-                        <img src="https://cdn.simpleicons.org/tailwindcss/ffffff" alt="Logo do framework Tailwind CSS" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
-                    </div>
-                    <div class="projeto-img">
-                        <img class="screenshot" src="img/Projetos/edevcomerce.jpeg" alt="Foto da home page do projeto" width="360" height="180">
-                    </div>
-                </div>
-                <div class="projeto">
-                    <h2>Lendary Motorsport</h2>
-                    <p>Plataforma de compra e venda de carros desenvolvida com React, Typescript, Tailwind CSS e Firebase usando uma API para gerenciar o banco de dados de veículos.</p>
-                    <div class="projeto-link">
-                        <a href="https://lendary-motorsport.vercel.app">lendary-motorsport.vercel.app</a>
-                    </div>
-                    <div class="projeto-link">
-                        <a href="https://github.com/DaniBoy083/LendaryMotorsport">github.com</a>
-                    </div>
-                    <div class="projeto-img">
-                        <img src="https://cdn.simpleicons.org/react/ffffff" alt="Logo da biblioteca React" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
-                        <img src="https://cdn.simpleicons.org/typescript/ffffff" alt="Logo da linguagem Typescript" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
-                        <img src="https://cdn.simpleicons.org/tailwindcss/ffffff" alt="Logo do framework Tailwind CSS" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
-                        <img src="https://cdn.simpleicons.org/firebase/ffffff" alt="Logo do banco de dados Firebase" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
-                    </div>
-                    <div class="projeto-img">
-                        <img class="screenshot" src="img/Projetos/lendaryMotorsport.jpeg" alt="Foto da home page do projeto" width="360" height="180">
-                    </div>
-                </div>
-                <div class="projeto">
-                    <h2>Repolist</h2>
-                    <p>Repolist é uma aplicação web desenvolvida com React, Typescript e Tailwind CSS que lista os repositórios mais relevantes do GitHub, permitindo aos usuários explorar e descobrir projetos interessantes na plataforma.</p>
-                    <div class="projeto-link">
-                        <a href="https://repolist-zeta.vercel.app">repolist-zeta.vercel.app</a>
-                    </div>
-                    <div class="projeto-link">
-                        <a href="https://github.com/DaniBoy083/repolist">github.com</a>
-                    </div>
-                    <div class="projeto-img">
-                        <img src="https://cdn.simpleicons.org/react/ffffff" alt="Logo da biblioteca React" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
-                        <img src="https://cdn.simpleicons.org/typescript/ffffff" alt="Logo da linguagem Typescript" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
-                        <img src="https://cdn.simpleicons.org/tailwindcss/ffffff" alt="Logo do framework Tailwind CSS" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
-                    </div>
-                    <div class="projeto-img">
-                        <img class="screenshot" src="img/Projetos/repolist.jpeg" alt="Foto da home page do projeto" width="360" height="180">
                     </div>
                 </div>
                 <div class="projeto">

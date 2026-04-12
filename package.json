@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "prebuild": "node scripts/generate-build-meta.cjs",
     "build": "tsc",
-    "watch": "tsc -w"
+    "watch": "npm run prebuild && tsc -w"
   },
   "devDependencies": {
     "typescript": "^5.2.2"
