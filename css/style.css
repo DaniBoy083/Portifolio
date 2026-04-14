@@ -424,6 +424,19 @@ section.sobre-a-pagina h1::after,
     transform: translateY(-2px) scale(1.04);
 }
 
+.certificado {
+    max-width: 100%;
+}
+
+.certificado img {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
 .projetos-lista {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
@@ -903,6 +916,14 @@ footer .desenvolvedor a:hover {
     .linguagens-pagina {
         grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
         gap: 12px;
+    }
+
+    .certificados-lista {
+        grid-template-columns: 1fr;
+    }
+
+    .certificado {
+        max-width: 100%;
     }
 
     .projetos-lista {
