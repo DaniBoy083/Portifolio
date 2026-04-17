@@ -442,7 +442,7 @@ async function drawCurriculumPdf(snapshot, mode, fileName) {
     }
     y += 2;
     y = drawSectionTitle(doc, 'QUALIFICAÇÕES', y);
-    y = drawParagraph(doc, 'Profissional orientado aos negócios com experiências em manuseio de equipamentos eletrônicos, desenvolvimento de aplicações web full-stack, desenvolvimento de páginas responsivas, montagem de computadores, informática básica, instalação de sistemas e programas computacionais, paciente, ouvinte e com bom convívio social.', y, 14, 182, 10);
+    y = drawParagraph(doc, 'Profissional orientado aos negócios com atuação como desenvolvedor full-stack e analista de dados, com experiência em aplicações web, páginas responsivas, automações, consolidação de planilhas, criação de dashboards e geração de relatórios. Possui vivência em montagem e manutenção de computadores, informática, instalação de sistemas e programas computacionais, além de perfil colaborativo e boa comunicação.', y, 14, 182, 10);
     y += 4;
     y = ensurePage(doc, y, 26);
     y = drawSectionTitle(doc, 'FORMAÇÃO ACADÊMICA', y);
