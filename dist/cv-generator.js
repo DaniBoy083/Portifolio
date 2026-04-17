@@ -372,6 +372,7 @@ async function drawCurriculumPdf(snapshot, mode, fileName) {
     const semester = getCurrentAcademicPeriod(5, 2026, 0);
     const formationItems = [
         'Ensino Médio completo',
+        'Análise de Dados | EBAC (cursando)',
         `Cursando Ciências da Computação no Centro Universitário de João Pessoa - ${semester}º semestre.`
     ];
     const professionalExperienceItems = [
