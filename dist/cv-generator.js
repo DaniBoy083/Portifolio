@@ -178,7 +178,6 @@ function collectPortfolioSnapshot() {
         virtualization: getListText('#virtualizações .virtualização h2'),
         certifications: getListText('#certificados .certificado h2'),
         certificateAttachments: getCertificateAttachments(),
-        studies: getListText('#estudos .estudo h2'),
         projects: getProjects()
     };
 }
@@ -482,12 +481,6 @@ async function drawCurriculumPdf(snapshot, mode, fileName) {
     y = drawSectionTitle(doc, 'CERTIFICAÇÕES', y);
     y = drawBulletList(doc, snapshot.certifications, y, 16, 176);
     y += 3;
-    if (mode === 'completo') {
-        y = ensurePage(doc, y, 24);
-        y = drawSectionTitle(doc, 'EM APRENDIZADO', y);
-        y = drawBulletList(doc, snapshot.studies, y, 16, 176);
-        y += 3;
-    }
     y = ensurePage(doc, y, 24);
     y = drawSectionTitle(doc, 'CONTATO PROFISSIONAL', y);
     y = drawLinkLine(doc, 'E-mail', PERSONAL_INFO.email, `mailto:${PERSONAL_INFO.email}`, y, 16, 176);
