@@ -262,6 +262,7 @@ main > h4 {
 }
 
 section.linguagens,
+section.soft-skills,
 section.bibliotecas,
 section.frameworks,
 section.bancos-de-dados,
@@ -288,6 +289,7 @@ section.metas {
 }
 
 section.linguagens h1,
+section.soft-skills h1,
 section.bibliotecas h1,
 section.frameworks h1,
 section.bancos-de-dados h1,
@@ -307,6 +309,7 @@ section.sobre-a-pagina h1,
 }
 
 section.linguagens h1::after,
+section.soft-skills h1::after,
 section.bibliotecas h1::after,
 section.frameworks h1::after,
 section.bancos-de-dados h1::after,
@@ -327,6 +330,7 @@ section.sobre-a-pagina h1::after,
 }
 
 .linguagens-lista,
+.soft-skills-lista,
 .bibliotecas-lista,
 .frameworks-lista,
 .bancos-de-dados-lista,
@@ -342,6 +346,7 @@ section.sobre-a-pagina h1::after,
 }
 
 .linguagem,
+.soft-skill,
 .biblioteca,
 .framework,
 .banco-de-dado,
@@ -366,6 +371,7 @@ section.sobre-a-pagina h1::after,
 }
 
 .linguagem:hover,
+.soft-skill:hover,
 .biblioteca:hover,
 .framework:hover,
 .banco-de-dado:hover,
@@ -380,6 +386,7 @@ section.sobre-a-pagina h1::after,
 }
 
 .linguagem h2,
+.soft-skill h2,
 .biblioteca h2,
 .framework h2,
 .banco-de-dado h2,
@@ -393,6 +400,7 @@ section.sobre-a-pagina h1::after,
 }
 
 .linguagem p2,
+.soft-skill p2,
 .biblioteca p2,
 .framework p2,
 .banco-de-dado p2,

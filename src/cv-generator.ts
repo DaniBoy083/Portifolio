@@ -21,6 +21,7 @@ interface PortfolioSnapshot {
     email: string;
     linkedInUrl: string;
     githubUrl: string;
+    softSkills: string[];
     languages: string[];
     libraries: string[];
     frameworks: string[];
@@ -289,6 +290,7 @@ function collectPortfolioSnapshot(): PortfolioSnapshot {
         email: getEmail(),
         linkedInUrl: links.linkedInUrl,
         githubUrl: links.githubUrl,
+        softSkills: getListText('#soft-skills .soft-skill h2'),
         languages: getListText('#linguagens .linguagem h2'),
         libraries: getListText('#bibliotecas .biblioteca h2'),
         frameworks: getListText('#frameworks .framework h2'),
@@ -552,6 +554,13 @@ async function drawCurriculumPdf(snapshot: PortfolioSnapshot, mode: CurriculumMo
         'Espanhol (intermediário)'
     ];
 
+    const defaultSoftSkills = [
+        'Comunicação',
+        'Trabalho em equipe',
+        'Tomada de decisão',
+        'Liderança'
+    ];
+
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(PORTFOLIO_URL)}`;
     const logoImage = document.getElementById('logo') as HTMLImageElement | null;
     const profilePhotoPath = logoImage?.getAttribute('src') || 'img/Placeholders/minhafoto.jpg';
@@ -637,6 +646,11 @@ async function drawCurriculumPdf(snapshot: PortfolioSnapshot, mode: CurriculumMo
     y = ensurePage(doc, y, 30);
     y = drawSectionTitle(doc, 'IDIOMAS', y);
     y = drawBulletList(doc, spokenLanguages, y, 16, 176);
+    y += 3;
+
+    y = ensurePage(doc, y, 26);
+    y = drawSectionTitle(doc, 'COMPETÊNCIAS COMPORTAMENTAIS', y);
+    y = drawBulletList(doc, snapshot.softSkills.length ? snapshot.softSkills : defaultSoftSkills, y, 16, 176);
     y += 3;
 
     y = ensurePage(doc, y, 56);
