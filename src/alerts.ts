@@ -1,4 +1,7 @@
 type ToastType = 'info' | 'success' | 'error';
+type ToastOrigin = 'default' | 'welcome';
+
+const WELCOME_TOASTS_SEEN_KEY = 'portfolio-welcome-toasts-seen';
 
 function ensureToastRoot(): HTMLElement {
     const existing = document.getElementById('toast-root');
@@ -13,12 +16,63 @@ function ensureToastRoot(): HTMLElement {
     return root;
 }
 
-function showToast(message: string, type: ToastType = 'info', duration = 3800): void {
+function hideToast(toast: HTMLElement): void {
+    if (toast.dataset.closed === 'true') {
+        return;
+    }
+
+    toast.dataset.closed = 'true';
+    toast.classList.remove('toast-visible');
+    toast.classList.add('toast-hide');
+    window.setTimeout(() => {
+        toast.remove();
+    }, 220);
+}
+
+function dismissToasts(origin?: ToastOrigin): void {
+    const toasts = document.querySelectorAll<HTMLElement>('.toast');
+
+    toasts.forEach((toast) => {
+        if (origin && toast.dataset.origin !== origin) {
+            return;
+        }
+
+        hideToast(toast);
+    });
+}
+
+function hasSeenWelcomeMessages(): boolean {
+    try {
+        return window.sessionStorage.getItem(WELCOME_TOASTS_SEEN_KEY) === 'true';
+    } catch {
+        return false;
+    }
+}
+
+function markWelcomeMessagesAsSeen(): void {
+    try {
+        window.sessionStorage.setItem(WELCOME_TOASTS_SEEN_KEY, 'true');
+    } catch {
+        // Ignore environments where sessionStorage is unavailable.
+    }
+}
+
+function shouldShowWelcomeMessages(): boolean {
+    return !window.location.hash && window.scrollY < 120 && !hasSeenWelcomeMessages();
+}
+
+function showToast(
+    message: string,
+    type: ToastType = 'info',
+    duration = 3800,
+    origin: ToastOrigin = 'default'
+): void {
     const root = ensureToastRoot();
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
     toast.setAttribute('role', 'status');
     toast.setAttribute('aria-live', 'polite');
+    toast.dataset.origin = origin;
 
     const text = document.createElement('p');
     text.className = 'toast-message';
@@ -53,11 +107,7 @@ function showToast(message: string, type: ToastType = 'info', duration = 3800): 
         }
 
         closed = true;
-        toast.classList.remove('toast-visible');
-        toast.classList.add('toast-hide');
-        window.setTimeout(() => {
-            toast.remove();
-        }, 220);
+        hideToast(toast);
     };
 
     closeButton.addEventListener('click', closeToast);
@@ -73,9 +123,34 @@ document.addEventListener('DOMContentLoaded', () => {
         'Espero que goste.'
     ];
 
-    welcomeMessages.forEach((message, index) => {
-        window.setTimeout(() => {
-            showToast(message, 'info', 4200);
-        }, index * 550);
-    });
+    const dismissWelcomeToastsOnScroll = () => {
+        if (window.scrollY < 120) {
+            return;
+        }
+
+        dismissToasts('welcome');
+        window.removeEventListener('scroll', dismissWelcomeToastsOnScroll);
+    };
+
+    window.addEventListener('scroll', dismissWelcomeToastsOnScroll, { passive: true });
+
+    window.setTimeout(() => {
+        if (!shouldShowWelcomeMessages()) {
+            window.removeEventListener('scroll', dismissWelcomeToastsOnScroll);
+            return;
+        }
+
+        markWelcomeMessagesAsSeen();
+
+        welcomeMessages.forEach((message, index) => {
+            window.setTimeout(() => {
+                if (window.scrollY >= 120) {
+                    dismissToasts('welcome');
+                    return;
+                }
+
+                showToast(message, 'info', 4200, 'welcome');
+            }, index * 550);
+        });
+    }, 260);
 });
