@@ -1,4 +1,14 @@
-type LastUpdateSource = 'manual' | 'git' | 'document';
+type LastUpdateSource = 'manual' | 'github' | 'git' | 'document';
+
+const GITHUB_MAIN_COMMIT_API_URL = 'https://api.github.com/repos/DaniBoy083/Portifolio/commits/main';
+
+interface GitHubCommitResponse {
+    commit?: {
+        committer?: {
+            date?: string;
+        };
+    };
+}
 
 interface Window {
     __PORTFOLIO_LAST_COMMIT_DATE__?: string;
@@ -28,6 +38,25 @@ function resolveLastUpdateDate(label: HTMLElement): { date: Date | null; source:
     return { date: parseDate(document.lastModified), source: 'document' };
 }
 
+async function fetchGitHubMainCommitDate(): Promise<Date | null> {
+    try {
+        const response = await fetch(GITHUB_MAIN_COMMIT_API_URL, {
+            headers: {
+                Accept: 'application/vnd.github+json'
+            }
+        });
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const payload = await response.json() as GitHubCommitResponse;
+        return parseDate(payload.commit?.committer?.date);
+    } catch {
+        return null;
+    }
+}
+
 function formatLastUpdated(date: Date | null): string {
     if (!date) {
         return 'Ultima atualização';
@@ -42,7 +71,7 @@ function formatLastUpdated(date: Date | null): string {
     return `Ultima atualização: ${formattedDate}`;
 }
 
-function updateLastUpdatedLabel(): void {
+async function updateLastUpdatedLabel(): Promise<void> {
     const label = document.getElementById('ultima-atualizacao');
     if (!label) {
         return;
@@ -51,6 +80,18 @@ function updateLastUpdatedLabel(): void {
     const { date, source } = resolveLastUpdateDate(label);
     label.textContent = formatLastUpdated(date);
     label.setAttribute('data-update-source', source);
+
+    if (source === 'manual') {
+        return;
+    }
+
+    const githubDate = await fetchGitHubMainCommitDate();
+    if (!githubDate) {
+        return;
+    }
+
+    label.textContent = formatLastUpdated(githubDate);
+    label.setAttribute('data-update-source', 'github');
 }
 
 function getCurrentAcademicSemester(baseSemester: number, baseYear: number, baseMonth: number): number {
@@ -75,6 +116,6 @@ function updateCurrentSemesterLabel(): void {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    updateLastUpdatedLabel();
+    void updateLastUpdatedLabel();
     updateCurrentSemesterLabel();
 });

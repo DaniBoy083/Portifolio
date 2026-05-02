@@ -1,4 +1,5 @@
 "use strict";
+const GITHUB_MAIN_COMMIT_API_URL = 'https://api.github.com/repos/DaniBoy083/Portifolio/commits/main';
 function parseDate(value) {
     if (!value) {
         return null;
@@ -17,6 +18,23 @@ function resolveLastUpdateDate(label) {
     }
     return { date: parseDate(document.lastModified), source: 'document' };
 }
+async function fetchGitHubMainCommitDate() {
+    try {
+        const response = await fetch(GITHUB_MAIN_COMMIT_API_URL, {
+            headers: {
+                Accept: 'application/vnd.github+json'
+            }
+        });
+        if (!response.ok) {
+            return null;
+        }
+        const payload = await response.json();
+        return parseDate(payload.commit?.committer?.date);
+    }
+    catch {
+        return null;
+    }
+}
 function formatLastUpdated(date) {
     if (!date) {
         return 'Ultima atualização';
@@ -28,7 +46,7 @@ function formatLastUpdated(date) {
     }).format(date);
     return `Ultima atualização: ${formattedDate}`;
 }
-function updateLastUpdatedLabel() {
+async function updateLastUpdatedLabel() {
     const label = document.getElementById('ultima-atualizacao');
     if (!label) {
         return;
@@ -36,6 +54,15 @@ function updateLastUpdatedLabel() {
     const { date, source } = resolveLastUpdateDate(label);
     label.textContent = formatLastUpdated(date);
     label.setAttribute('data-update-source', source);
+    if (source === 'manual') {
+        return;
+    }
+    const githubDate = await fetchGitHubMainCommitDate();
+    if (!githubDate) {
+        return;
+    }
+    label.textContent = formatLastUpdated(githubDate);
+    label.setAttribute('data-update-source', 'github');
 }
 function getCurrentAcademicSemester(baseSemester, baseYear, baseMonth) {
     const now = new Date();
@@ -55,6 +82,6 @@ function updateCurrentSemesterLabel() {
     label.textContent = `Semestre atual: ${currentSemester}º semestre`;
 }
 document.addEventListener('DOMContentLoaded', () => {
-    updateLastUpdatedLabel();
+    void updateLastUpdatedLabel();
     updateCurrentSemesterLabel();
 });
