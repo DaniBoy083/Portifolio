@@ -164,8 +164,8 @@ function collectPortfolioSnapshot() {
     const links = getProfileLinks();
     return {
         name: getTextBySelector('.topo-cabeçalho h1'),
-        role: getTextBySelector('.topo-cabeçalho p1'),
-        summary: getTextBySelector('.topo-paragrafo p2').replace(/^"|"$/g, ''),
+        role: getTextBySelector('.topo-cabeçalho .topo-cargo'),
+        summary: getTextBySelector('.topo-paragrafo p').replace(/^"|"$/g, ''),
         lastUpdated: getTextBySelector('#ultima-atualizacao'),
         email: getEmail(),
         linkedInUrl: links.linkedInUrl,

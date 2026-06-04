@@ -15,6 +15,68 @@ interface Window {
     __PORTFOLIO_BUILD_DATE__?: string;
 }
 
+interface SummaryPanelCounts {
+    technologies: number;
+    formations: number;
+    certificates: number;
+    projects: number;
+}
+
+const TECHNOLOGY_TITLE_SELECTORS = [
+    '#linguagens .linguagem h2',
+    '#bibliotecas .biblioteca h2',
+    '#frameworks .framework h2',
+    '#bancos-de-dados .banco-de-dado h2',
+    '#virtualizações .virtualização h2'
+];
+
+function cleanSummaryText(value: string | null | undefined): string {
+    return (value || '').replace(/\s+/g, ' ').trim();
+}
+
+function countUniqueTextBySelectors(selectors: string[]): number {
+    const values = selectors.reduce<string[]>((accumulator, selector) => {
+        const selectorValues = Array.from(document.querySelectorAll(selector))
+            .map((item) => cleanSummaryText(item.textContent))
+            .filter(Boolean);
+
+        return accumulator.concat(selectorValues);
+    }, []);
+
+    return new Set(values).size;
+}
+
+function collectSummaryPanelCounts(): SummaryPanelCounts {
+    return {
+        technologies: countUniqueTextBySelectors(TECHNOLOGY_TITLE_SELECTORS),
+        formations: document.querySelectorAll('#formações .formação').length,
+        certificates: document.querySelectorAll('#certificados .certificado').length,
+        projects: document.querySelectorAll('#projetos .projeto').length
+    };
+}
+
+function setSummaryPanelValue(elementId: string, value: number): void {
+    const target = document.getElementById(elementId);
+    if (!target) {
+        return;
+    }
+
+    target.textContent = new Intl.NumberFormat('pt-BR').format(value);
+}
+
+function updateSummaryPanel(): void {
+    const panel = document.getElementById('painel-resumo');
+    if (!panel) {
+        return;
+    }
+
+    const counts = collectSummaryPanelCounts();
+    setSummaryPanelValue('resumo-tecnologias', counts.technologies);
+    setSummaryPanelValue('resumo-formacoes', counts.formations);
+    setSummaryPanelValue('resumo-certificados', counts.certificates);
+    setSummaryPanelValue('resumo-projetos', counts.projects);
+}
+
 function parseDate(value: string | null | undefined): Date | null {
     if (!value) {
         return null;
@@ -118,4 +180,5 @@ function updateCurrentSemesterLabel(): void {
 document.addEventListener('DOMContentLoaded', () => {
     void updateLastUpdatedLabel();
     updateCurrentSemesterLabel();
+    updateSummaryPanel();
 });

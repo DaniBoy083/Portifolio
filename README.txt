@@ -45,7 +45,8 @@ GERACAO AUTOMATICA DE CURRICULO
 
 Build:
 1. Execute npm install
-2. Execute npm run build
+2. Execute npm run validate
+3. Execute npm run build
 
 O build agora gera automaticamente o arquivo dist/build-meta.js antes da compilacao TypeScript.
 

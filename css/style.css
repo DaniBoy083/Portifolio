@@ -70,11 +70,6 @@ body::after {
     background: rgba(255, 255, 255, 0.05);
 }
 
-p1,
-p2 {
-    display: block;
-}
-
 .barra-de-navegação {
     position: fixed;
     top: 12px;
@@ -170,12 +165,13 @@ header .topo-cabeçalho h1 {
     margin-bottom: 8px;
 }
 
-header .topo-cabeçalho p1 {
+header .topo-cabeçalho .topo-cargo {
     color: var(--accent-soft);
     font-weight: 600;
     font-size: 0.92rem;
     text-transform: uppercase;
     letter-spacing: 0.14em;
+    margin: 0;
 }
 
 header .topo-paragrafo {
@@ -183,9 +179,10 @@ header .topo-paragrafo {
     max-width: 640px;
 }
 
-header .topo-paragrafo p2 {
+header .topo-paragrafo p {
     color: var(--text-muted);
     font-size: 1rem;
+    margin: 0;
 }
 
 header .topo-acoes {
@@ -261,6 +258,50 @@ main > h4 {
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.24), transparent);
 }
 
+.painel-resumo-lista {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px;
+}
+
+.painel-indicador {
+    width: 100%;
+    padding: 18px;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background:
+        radial-gradient(circle at top right, rgba(255, 255, 255, 0.1), transparent 42%),
+        linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.025));
+    box-shadow: var(--panel-shadow);
+    transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
+}
+
+.painel-indicador:hover {
+    transform: translateY(-3px);
+    border-color: rgba(255, 255, 255, 0.24);
+    box-shadow: var(--panel-shadow), 0 16px 26px rgba(6, 10, 20, 0.16);
+}
+
+.painel-indicador-valor {
+    display: block;
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+}
+
+.painel-indicador h2 {
+    font-size: 0.98rem;
+    margin-bottom: 4px;
+}
+
+.painel-indicador p {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    line-height: 1.55;
+}
+
 section.linguagens,
 section.soft-skills,
 section.bibliotecas,
@@ -271,6 +312,7 @@ section.projetos,
 section.estudos,
 section.certificados,
 section.formações,
+section.painel-resumo,
 section.sobre-a-pagina,
 .contato-section,
 section.metas {
@@ -298,6 +340,7 @@ section.projetos h1,
 section.estudos h1,
 section.certificados h1,
 section.formações h1,
+section.painel-resumo h1,
 section.sobre-a-pagina h1,
 .contato-section h2 {
     margin-bottom: 22px;
@@ -318,6 +361,7 @@ section.projetos h1::after,
 section.estudos h1::after,
 section.certificados h1::after,
 section.formações h1::after,
+section.painel-resumo h1::after,
 section.sobre-a-pagina h1::after,
 .contato-section h2::after {
     content: '';
@@ -399,16 +443,17 @@ section.sobre-a-pagina h1::after,
     font-size: 0.92rem;
 }
 
-.linguagem p2,
-.soft-skill p2,
-.biblioteca p2,
-.framework p2,
-.banco-de-dado p2,
-.virtualização p2,
-.estudo p2,
-.linguagem-pagina p2 {
+.linguagem p,
+.soft-skill p,
+.biblioteca p,
+.framework p,
+.banco-de-dado p,
+.virtualização p,
+.estudo p,
+.linguagem-pagina p {
     color: var(--text-muted);
     font-size: 0.82rem;
+    margin: 0;
 }
 
 .linguagem img,
@@ -703,9 +748,9 @@ section.sobre-a-pagina .repositorio-da-pagina {
 .toast-root {
     position: fixed;
     top: 88px;
-    right: 16px;
-    left: auto;
-    transform: none;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
     z-index: 1200;
     display: flex;
     flex-direction: column;
@@ -833,11 +878,12 @@ footer .desenvolvedor {
     text-align: center;
 }
 
-footer .desenvolvedor ol {
+footer .desenvolvedor p {
     list-style: none;
     padding: 4px 0;
     color: var(--text-muted);
     font-size: 0.92rem;
+    margin: 0;
 }
 
 footer .desenvolvedor a {
@@ -906,6 +952,7 @@ footer .desenvolvedor a:hover {
     section.estudos,
     section.certificados,
     section.formações,
+    section.painel-resumo,
     section.sobre-a-pagina,
     .contato-section,
     section.metas {
@@ -948,12 +995,21 @@ footer .desenvolvedor a:hover {
     .frameworks-lista,
     .bancos-de-dados-lista,
     .virtualização-lista,
+    .painel-resumo-lista,
     .estudos-lista,
     .certificados-lista,
     .formações-lista,
     .linguagens-pagina {
         grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
         gap: 12px;
+    }
+
+    .painel-indicador {
+        padding: 14px;
+    }
+
+    .painel-indicador-valor {
+        font-size: 1.65rem;
     }
 
     .certificados-lista {
@@ -999,9 +1055,9 @@ footer .desenvolvedor a:hover {
 
     .toast-root {
         top: 82px;
-        left: 12px;
-        right: 12px;
-        transform: none;
-        width: auto;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        width: min(92vw, 360px);
     }
 }

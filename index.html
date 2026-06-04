@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="img/Placeholders/laptop logo.png">
     <link rel="stylesheet" href="css/style.css">
-    <script src="dist/alerts.js"></script>
-    <script src="dist/build-meta.js"></script>
-    <script src="dist/portfolio-meta.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-    <script src="dist/cv-generator.js"></script>
+    <script src="dist/alerts.js" defer></script>
+    <script src="dist/build-meta.js" defer></script>
+    <script src="dist/portfolio-meta.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" defer></script>
+    <script src="dist/cv-generator.js" defer></script>
     <title>Portfólio | Daniel Costa</title>
 </head>
 <body>
-    <script src="dist/contact.js"></script>
+    <script src="dist/contact.js" defer></script>
     <nav id="barra-de-navegação" class="barra-de-navegação">
         <ul class="link-de-navegação">
             <li><a href="#formações">Formações</a></li>
@@ -27,13 +27,13 @@
     </nav>
     <header class="topo">
         <div class="topo-foto">
-            <img id="logo" src="img/Placeholders/minhafoto.jpg" alt="Logomarca do Dani Boy" width="200" height="200">
+            <img id="logo" src="img/Placeholders/minhafoto.jpg" alt="Logomarca do Dani Boy" width="200" height="200" loading="eager" fetchpriority="high" decoding="async">
         </div>
         <div class="topo-cabeçalho">
             <h1>DANIEL COSTA</h1>
-            <p1>Desenvolvedor full-stack | Analista de Dados</p1>
+            <p class="topo-cargo">Desenvolvedor full-stack | Analista de Dados</p>
             <div class="topo-paragrafo">
-                <p2>"Foco em performace, codigo limpo e boas praticas."</p2>
+                <p>"Foco em performace, codigo limpo e boas praticas."</p>
             </div>
             <div class="topo-acoes">
                 <a href="mailto:danielcostacarvalhomartins06@gmail.com">Entre em contato</a>
@@ -45,13 +45,37 @@
     </header>
     <main>
         <h4 id="ultima-atualizacao" class="ultima-atualizacao" data-manual-date="">Ultima atualização</h4>
+        <section id="painel-resumo" class="painel-resumo" data-ignore-curriculo="true" aria-labelledby="titulo-painel-resumo">
+            <h1 id="titulo-painel-resumo">Resumo</h1>
+            <div class="painel-resumo-lista">
+                <article class="painel-indicador">
+                    <span id="resumo-tecnologias" class="painel-indicador-valor">0</span>
+                    <h2>Tecnologias trabalhadas</h2>
+                    <p>Linguagens, bibliotecas, frameworks, bancos de dados e virtualização.</p>
+                </article>
+                <article class="painel-indicador">
+                    <span id="resumo-formacoes" class="painel-indicador-valor">0</span>
+                    <h2>Formações</h2>
+                    <p>Formações acadêmicas e cursos em andamento/concluídos.</p>
+                </article>
+                <article class="painel-indicador">
+                    <span id="resumo-certificados" class="painel-indicador-valor">0</span>
+                    <h2>Certificados</h2>
+                    <p>Certificados publicados na seção de certificações.</p>
+                </article>
+                <article class="painel-indicador">
+                    <span id="resumo-projetos" class="painel-indicador-valor">0</span>
+                    <h2>Projetos</h2>
+                    <p>Projetos listados no portfólio com descrição e previews.</p>
+                </article>
+            </div>
+        </section>
         <section id="sobre-mim" class="sobre-a-pagina">
             <h1>Sobre mim</h1>
             <div class="meta">
                 <h2>Profissional orientado a resultados com atuação como desenvolvedor full-stack e analista de dados, com experiência em aplicações web, páginas responsivas, automações, consolidação de planilhas, criação de dashboards e geração de relatórios para apoiar decisões. Tenho vivência com informática, instalação de sistemas, montagem e manutenção de computadores, além de perfil colaborativo, comunicação clara e foco em melhoria contínua.</h2>
             </div>
         </section>
-    </br>
         <section id="formações" class="formações">
             <h1>Formações</h1>
             <div class="formações-lista">
@@ -61,167 +85,155 @@
                 </div>
                 <div class="formação">
                     <h2>Análise de Dados | EBAC</h2>
-                    <p2>Status: cursando</p2>
+                    <p>Status: cursando</p>
                 </div>
                 <div class="formação">
                     <h2>Ensino médio completo</h2>
-                    <p2>Status: concluído</p2>
+                    <p>Status: concluído</p>
                 </div>
             </div>
         </section>
-    </br>
         <section id="soft-skills" class="soft-skills">
             <h1>Soft skills</h1>
             <div class="soft-skills-lista">
                 <div class="soft-skill">
                     <h2>Comunicação</h2>
-                    <p2>Clareza para apresentar ideias e alinhar expectativas</p2>
+                    <p>Clareza para apresentar ideias e alinhar expectativas</p>
                 </div>
                 <div class="soft-skill">
                     <h2>Trabalho em equipe</h2>
-                    <p2>Colaboração ativa em times multidisciplinares</p2>
+                    <p>Colaboração ativa em times multidisciplinares</p>
                 </div>
                 <div class="soft-skill">
                     <h2>Tomada de decisão</h2>
-                    <p2>Análise de cenários com foco em resultado</p2>
+                    <p>Análise de cenários com foco em resultado</p>
                 </div>
                 <div class="soft-skill">
                     <h2>Liderança</h2>
-                    <p2>Condução de iniciativas com responsabilidade e visão</p2>
+                    <p>Condução de iniciativas com responsabilidade e visão</p>
                 </div>
             </div>
         </section>
-    </br>
         <section id="linguagens" class="linguagens">
             <h1>Linguagens</h1>
             <div class="linguagens-lista">
                 <div class="linguagem">
                     <img src="https://cdn.simpleicons.org/python/ffffff" alt="Logo da linguagem Python" width="100" height="100" loading="lazy" referrerpolicy="no-referrer">
                     <h2>Python</h2>
-                    <p2>Versátil para desenvolvimento de automações e back-end</p2>
+                    <p>Versátil para desenvolvimento de automações e back-end</p>
                 </div>
                 <div class="linguagem">
                     <img src="https://cdn.simpleicons.org/html5/ffffff" alt="Logo da linguagem HTML" width="100" height="100" loading="lazy" referrerpolicy="no-referrer">
                     <h2>HTML</h2>
-                    <p2>Marcação e estruturação web</p2>
+                    <p>Marcação e estruturação web</p>
                 </div>
                 <div class="linguagem">
                     <img src="https://cdn.simpleicons.org/css/ffffff" alt="Logo da linguagem CSS" width="100" height="100" loading="lazy" referrerpolicy="no-referrer">
                     <h2>CSS</h2>
-                    <p2>Estilização e layout web</p2>
+                    <p>Estilização e layout web</p>
                 </div>
                 <div class="linguagem">
                     <img src="https://cdn.simpleicons.org/mysql/ffffff" alt="Logo da linguagem SQL" width="100" height="100" loading="lazy" referrerpolicy="no-referrer">
                     <h2>SQL</h2>
-                    <p2>Gerenciamento de bancos de dados</p2>
+                    <p>Gerenciamento de bancos de dados</p>
                 </div>
                 <div class="linguagem">
                     <img src="https://cdn.simpleicons.org/openjdk/ffffff" alt="Logo da linguagem Java" width="100" height="100" loading="lazy" referrerpolicy="no-referrer">
                     <h2>Java</h2>
-                    <p2>Desenvolvimento de aplicações robustas</p2>
+                    <p>Desenvolvimento de aplicações robustas</p>
                 </div>
                 <div class="linguagem">
                     <img src="https://cdn.simpleicons.org/c/ffffff" alt="Logo da linguagem C" width="100" height="100" loading="lazy" referrerpolicy="no-referrer">
                     <h2>C</h2>
-                    <p2>Programação de baixo nível eficiente</p2>
+                    <p>Programação de baixo nível eficiente</p>
                 </div>
                 <div class="linguagem">
                     <img src="https://cdn.simpleicons.org/typescript/ffffff" alt="Logo da linguagem Typescript" width="100" height="100" loading="lazy" referrerpolicy="no-referrer">
                     <h2>Typescript</h2>
-                    <p2>Tipagem estática para aplicações JavaScript</p2>
+                    <p>Tipagem estática para aplicações JavaScript</p>
                 </div>
             </div>
         </section>
-    </br>
         <section id="bibliotecas" class="bibliotecas">
             <h1>Bibliotecas</h1>
             <div class="bibliotecas-lista">
                 <div class="biblioteca">
                     <img src="https://cdn.simpleicons.org/pypi/ffffff" alt="Logo da biblioteca grafica PySimpleGUI" width="100" height="75" loading="lazy" referrerpolicy="no-referrer">
                     <h2>PySimpleGUI</h2>
-                    <p2>Interfaces gráficas em Python</p2>
+                    <p>Interfaces gráficas em Python</p>
                 </div>
                 <div class="biblioteca">
                     <img src="img/Bibliotecas/kivy.svg" alt="Logo da biblioteca gráfica Kivy" width="100" height="100" loading="lazy">
                     <h2>Kivy</h2>
-                    <p2>Biblioteca para interfaces e aplicativos multiplataforma em Python</p2>
+                    <p>Biblioteca para interfaces e aplicativos multiplataforma em Python</p>
                 </div>
                 <div class="biblioteca">
                     <img src="https://cdn.simpleicons.org/react/ffffff" alt="Logo da biblioteca React" width="100" height="100" loading="lazy" referrerpolicy="no-referrer">
                     <h2>React</h2>
-                    <p2>Biblioteca para construção de interfaces web</p2>
+                    <p>Biblioteca para construção de interfaces web</p>
                 </div>
                 <div class="biblioteca">
                     <img src="img/Bibliotecas/matplotlib.svg" alt="Logo da biblioteca Matplotlib" width="100" height="100" loading="lazy">
                     <h2>Matplotlib</h2>
-                    <p2>Visualização de dados e geração de gráficos em Python</p2>
+                    <p>Visualização de dados e geração de gráficos em Python</p>
                 </div>
                 <div class="biblioteca">
                     <img src="img/Bibliotecas/pandas.svg" alt="Logo da biblioteca Pandas" width="100" height="100" loading="lazy">
                     <h2>Pandas</h2>
-                    <p2>Manipulação e análise de dados tabulares</p2>
+                    <p>Manipulação e análise de dados tabulares</p>
                 </div>
                 <div class="biblioteca">
                     <img src="img/Bibliotecas/plotly.svg" alt="Logo da biblioteca Plotly" width="100" height="100" loading="lazy">
                     <h2>Plotly</h2>
-                    <p2>Criação de gráficos interativos e dashboards</p2>
-                </div>
-                <div class="biblioteca">
-                    <img src="img/Bibliotecas/python-docx.svg" alt="Logo da biblioteca python-docx" width="100" height="100" loading="lazy">
-                    <h2>python-docx</h2>
-                    <p2>Leitura e geração de documentos Word em Python</p2>
+                    <p>Criação de gráficos interativos e dashboards</p>
                 </div>
             </div>
         </section>
-    </br>
         <section id="frameworks" class="frameworks">
             <h1>Frameworks</h1>
             <div class="frameworks-lista">
                 <div class="framework">
                     <img src="https://cdn.simpleicons.org/springboot/ffffff" alt="Logo do framework Spring boot" width="100" height="100" loading="lazy" referrerpolicy="no-referrer">
                     <h2>Spring Boot</h2>
-                    <p2>Desenvolvimento web e APIs REST em Java</p2>
+                    <p>Desenvolvimento web e APIs REST em Java</p>
                 </div>
                 <div class="framework">
                     <img src="https://cdn.simpleicons.org/tailwindcss/ffffff" alt="Logo do framework Tailwind CSS" width="100" height="100" loading="lazy" referrerpolicy="no-referrer">
                     <h2>Tailwind CSS</h2>
-                    <p2>Estilização e layout web</p2>
+                    <p>Estilização e layout web</p>
                 </div>
                 <div class="framework">
-                    <img src="img/frameworks/nextjs logo pb.jpg" alt="Logo do framework Next.js" width="100" height="100">
+                    <img src="img/frameworks/nextjs logo pb.jpg" alt="Logo do framework Next.js" width="100" height="100" loading="lazy" decoding="async">
                     <h2>Next.js</h2>
-                    <p2>Framework React para aplicações web</p2>
+                    <p>Framework React para aplicações web</p>
                 </div>
             </div>
         </section>
-    </br>
         <section id="bancos-de-dados" class="bancos-de-dados">
             <h1>Bancos de dados</h1>
             <div class="bancos-de-dados-lista">
                 <div class="banco-de-dado">
                     <img src="https://cdn.simpleicons.org/mysql/ffffff" alt="Logo do banco de dados MySQL" width="100" height="100" loading="lazy" referrerpolicy="no-referrer">
                     <h2>MySQL</h2>
-                    <p2>Banco de dados relacional de código aberto</p2>
+                    <p>Banco de dados relacional de código aberto</p>
                 </div>
                 <div class="banco-de-dado">
                     <img src="https://cdn.simpleicons.org/postgresql/ffffff" alt="Logo do banco de dados PostgreSQL" width="100" height="100" loading="lazy" referrerpolicy="no-referrer">
                     <h2>PostgreSQL</h2>
-                    <p2>Banco de dados relacional avançado</p2>
+                    <p>Banco de dados relacional avançado</p>
                 </div>
             </div>
         </section>
-    </br>
         <section id="virtualizações" class="virtualizações">
             <h1>Virtualização</h1>
             <div class="virtualização-lista">
                 <div class="virtualização">
                     <img src="https://cdn.simpleicons.org/docker/ffffff" alt="Logo do Docker" width="120" height="40" loading="lazy" referrerpolicy="no-referrer">
                     <h2>Docker</h2>
-                    <p2>Containerização para deploy e escalabilidade</p2>
+                    <p>Containerização para deploy e escalabilidade</p>
                 </div>
             </div>
         </section>
-    </br>
         <section id="projetos" class="projetos">
             <h1>Projetos</h1>
             <div class="projetos-lista">
@@ -238,7 +250,7 @@
                         <img src="https://cdn.simpleicons.org/mysql/ffffff" alt="Logo da linguagem SQL" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
                     </div>
                     <div class="projeto-img">
-                        <img class="screenshot" src="img/Projetos/UNPNEWS.png" alt="Foto da home page do projeto" width="360" height="180">
+                        <img class="screenshot" src="img/Projetos/UNPNEWS.png" alt="Foto da home page do projeto" width="360" height="180" loading="lazy" decoding="async">
                     </div>
                 </div>
                 <div class="projeto">
@@ -255,7 +267,7 @@
                         <img src="https://cdn.simpleicons.org/pypi/ffffff" alt="Logo da biblioteca grafica PySimpleGUI" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
                     </div>
                     <div class="projeto-img">
-                        <img class="screenshot" src="img/Projetos/calculadora de imc.jpeg" alt="Interface grafica da calculadora de IMC" width="360" height="180">
+                        <img class="screenshot" src="img/Projetos/calculadora de imc.jpeg" alt="Interface grafica da calculadora de IMC" width="360" height="180" loading="lazy" decoding="async">
                     </div>
                 </div>
                 <div class="projeto">
@@ -271,7 +283,7 @@
                     <div class="projeto-img">
                         <div class="projeto-preview-placeholder" role="img" aria-label="Preview indisponivel do projeto Network monitor">
                             <strong>Preview indisponivel</strong>
-                            <span>Screenshot ainda não publicada por questões de privacidade</span>
+                            <span>Screenshot não publicada por questões de privacidade</span>
                         </div>
                     </div>
                 </div>
@@ -287,7 +299,7 @@
                         <img src="https://cdn.simpleicons.org/mysql/ffffff" alt="Logo da linguagem SQL" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
                     </div>
                     <div class="projeto-img">
-                        <img class="screenshot" src="img/Projetos/AC mais saude pra voce.png" alt="Foto da home page do projeto" width="360" height="180">
+                        <img class="screenshot" src="img/Projetos/AC mais saude pra voce.png" alt="Foto da home page do projeto" width="360" height="180" loading="lazy" decoding="async">
                     </div>
                 </div>
                 <div class="projeto">
@@ -301,26 +313,23 @@
                         <img src="https://cdn.simpleicons.org/postgresql/ffffff" alt="Logo do banco de dados PostgreSQL" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
                     </div>
                     <div class="projeto-img">
-                        <img class="screenshot" src="img/Projetos/agendadigitalacsocial.jpeg" alt="Foto da home page do projeto" width="360" height="180">
+                        <img class="screenshot" src="img/Projetos/agendadigitalacsocial.jpeg" alt="Foto da home page do projeto" width="360" height="180" loading="lazy" decoding="async">
                     </div>
                 </div>
                 <div class="projeto">
-                    <h2>Portal consolidado de analise de dados | AC Social</h2>
-                    <p>Projeto real da OSC AC Social para consolidar planilhas de atendimento em dashboards anuais e comparativos historicos. O pipeline automatiza a leitura dos dados, gera graficos interativos, relatorios em Word, PDF unificado e um portal responsivo publicado na web.</p>
+                    <h2>Plataforma Consolidada de Análise de Dados | AC Social</h2>
+                    <p>Projeto real da OSC AC Social para consolidar dados de um datawherehouse em dashboards anuais e comparativos historicos. A plataforma permite uma análise integrada e visualização eficiente dos dados coletados.</p>
                     <div class="projeto-link">
-                        <a href="https://analisededadosac.netlify.app">analisededadosac.netlify.app</a>
+                        <a href="https://plataforma-consolidada-de-analise-d.vercel.app/relatorios">plataforma-consolidada-de-analise-d.vercel.app</a>
                     </div>
                     <div class="projeto-img">
-                        <img src="https://cdn.simpleicons.org/python/ffffff" alt="Logo da linguagem Python" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
-                        <img src="img/Bibliotecas/powershell.svg" alt="Logo da linguagem PowerShell" width="50" height="50" loading="lazy">
-                        <img src="img/Bibliotecas/pandas.svg" alt="Logo da biblioteca Pandas" width="50" height="50" loading="lazy">
-                        <img src="img/Bibliotecas/openpyxl.svg" alt="Logo da biblioteca OpenPyXL" width="50" height="50" loading="lazy">
-                        <img src="img/Bibliotecas/matplotlib.svg" alt="Logo da biblioteca Matplotlib" width="50" height="50" loading="lazy">
-                        <img src="img/Bibliotecas/plotly.svg" alt="Logo da biblioteca Plotly" width="50" height="50" loading="lazy">
-                        <img src="img/Bibliotecas/python-docx.svg" alt="Logo da biblioteca python-docx" width="50" height="50" loading="lazy">
+                        <img src="https://cdn.simpleicons.org/next.js/ffffff" alt="Logo do framework Next.js" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
+                        <img src="https://cdn.simpleicons.org/react/ffffff" alt="Logo da biblioteca React" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
+                        <img src="https://cdn.simpleicons.org/typescript/ffffff" alt="Logo da linguagem Typescript" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
+                        <img src="https://cdn.simpleicons.org/tailwindcss/ffffff" alt="Logo do framework Tailwind CSS" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
                     </div>
                     <div class="projeto-img">
-                        <img class="screenshot" src="img/Projetos/analise de dados.jpeg" alt="Preview do portal consolidado de analise de dados da AC Social" width="360" height="180">
+                        <img class="screenshot" src="img/Projetos/analise de dados.jpeg" alt="Preview do portal consolidado de analise de dados da AC Social" width="360" height="180" loading="lazy" decoding="async">
                     </div>
                 </div>
                 <div class="projeto">
@@ -334,11 +343,25 @@
                         <img src="https://cdn.simpleicons.org/postgresql/ffffff" alt="Logo do banco de dados PostgreSQL" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
                     </div>
                     <div class="projeto-img">
-                        <img class="screenshot " src="img/Projetos/Acesso digital.jpeg" alt="Foto da home page do projeto" width="360" height="180">
+                        <img class="screenshot " src="img/Projetos/Acesso digital.jpeg" alt="Foto da home page do projeto" width="360" height="180" loading="lazy" decoding="async">
                     </div>
                 </div>
                 <div class="projeto">
-                    <h2>Marcondes Ótica | Digital framework</h2>
+                    <h2>Digital Shooting House</h2>
+                    <p>Projeto de plataforma de monitoramento de treinamento de tiro esportivo paralímpico voltado a equipes de alto rendimento, com o objetivo de aprimorar o gerenciamento e a analise e experiencia de treino tanto para atiradores, instrutores e admininstradores esportivos.</p>
+                    <div class="projeto-img">
+                        <img src="https://cdn.simpleicons.org/next.js/ffffff" alt="Logo do framework Next.js" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
+                        <img src="https://cdn.simpleicons.org/react/ffffff" alt="Logo da biblioteca React" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
+                        <img src="https://cdn.simpleicons.org/typescript/ffffff" alt="Logo da linguagem Typescript" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
+                        <img src="https://cdn.simpleicons.org/tailwindcss/ffffff" alt="Logo do framework Tailwind CSS" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
+                        <img src="https://cdn.simpleicons.org/postgresql/ffffff" alt="Logo do banco de dados PostgreSQL" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
+                    </div>
+                    <div class="projeto-img">
+                        <img class="screenshot" src="img/Projetos/digital shooting house.jpeg" alt="Foto da home page do projeto" width="360" height="180" loading="lazy" decoding="async">
+                    </div>
+                </div>
+                <div class="projeto">
+                    <h2>Marcondes Ótica | Digital Framework</h2>
                     <p>Projeto real para a ótica Marcondes, onde desenvolvi um framework digital completo para a empresa, incluindo um site institucional, um sistema de gerenciamento de estoque e vendas, e uma plataforma de e-commerce integrada.</p>
                     <div class="projeto-img">
                         <img src="https://cdn.simpleicons.org/next.js/ffffff" alt="Logo do framework Next.js" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
@@ -348,8 +371,22 @@
                         <img src="https://cdn.simpleicons.org/postgresql/ffffff" alt="Logo do banco de dados PostgreSQL" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
                     </div>
                     <div class="projeto-img">
-                        <img class="screenshot" src="img/Projetos/marcondes otica digital framework.jpeg" alt="Foto da home page do projeto" width="360" height="180">
+                        <img class="screenshot" src="img/Projetos/marcondes otica digital framework.jpeg" alt="Foto da home page do projeto" width="360" height="180" loading="lazy" decoding="async">
                     </div>
+                </div>
+                <div class="projeto">
+                    <h2>Marcondes Ótica | Digital Showroom</h2>
+                    <p>Projeto real para a ótica Marcondes, onde desenvolvi um showroom digital completo para a empresa, incluindo uma interface interativa para exibição de produtos.</p>
+                        <div class="projeto-img">
+                            <img src="https://cdn.simpleicons.org/next.js/ffffff" alt="Logo do framework Next.js" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
+                            <img src="https://cdn.simpleicons.org/react/ffffff" alt="Logo da biblioteca React" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
+                            <img src="https://cdn.simpleicons.org/typescript/ffffff" alt="Logo da linguagem Typescript" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
+                            <img src="https://cdn.simpleicons.org/tailwindcss/ffffff" alt="Logo do framework Tailwind CSS" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
+                            <img src="https://cdn.simpleicons.org/postgresql/ffffff" alt="Logo do banco de dados PostgreSQL" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
+                        </div>
+                        <div class="projeto-img">
+                            <img class="screenshot " src="img/Projetos/marcondes otica digital showroom.jpeg" alt="Foto da home page do projeto" width="360" height="180" loading="lazy" decoding="async">
+                        </div>
                 </div>
                 <div class="projeto">
                     <h2>CriptoCurrency</h2>
@@ -366,7 +403,7 @@
                         <img src="https://cdn.simpleicons.org/css/ffffff" alt="Logo da linguagem CSS" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
                     </div>
                     <div class="projeto-img">
-                        <img class="screenshot" src="img/Projetos/CriptoCurrency.jpeg" alt="Foto da home page do projeto" width="360" height="180">
+                        <img class="screenshot" src="img/Projetos/CriptoCurrency.jpeg" alt="Foto da home page do projeto" width="360" height="180" loading="lazy" decoding="async">
                     </div>
                 </div>
                 <div class="projeto">
@@ -384,7 +421,7 @@
                         <img src="https://cdn.simpleicons.org/typescript/ffffff" alt="Logo da linguagem Typescript" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
                     </div>
                     <div class="projeto-img">
-                        <img class="screenshot" src="img/Projetos/Portifolio.jpeg" alt="Foto da home page do projeto" width="360" height="180">
+                        <img class="screenshot" src="img/Projetos/Portifolio.jpeg" alt="Foto da home page do projeto" width="360" height="180" loading="lazy" decoding="async">
                     </div>
                 </div>
                 <div class="projeto">
@@ -403,7 +440,7 @@
                         <img src="https://cdn.simpleicons.org/firebase/ffffff" alt="Logo do banco de dados Firebase" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
                     </div>
                     <div class="projeto-img">
-                        <img class="screenshot" src="img/Projetos/agregador + firebase.jpeg" alt="Foto da home page do projeto" width="360" height="180">
+                        <img class="screenshot" src="img/Projetos/agregador + firebase.jpeg" alt="Foto da home page do projeto" width="360" height="180" loading="lazy" decoding="async">
                     </div>
                 </div>
                 <div class="projeto">
@@ -422,39 +459,37 @@
                         <img src="https://cdn.simpleicons.org/tailwindcss/ffffff" alt="Logo do framework Tailwind CSS" width="50" height="50" loading="lazy" referrerpolicy="no-referrer">
                     </div>
                     <div class="projeto-img">
-                        <img class="screenshot" src="img/Projetos/boardev.jpeg" alt="Foto da home page do projeto" width="360" height="180">
+                        <img class="screenshot" src="img/Projetos/boardev.jpeg" alt="Foto da home page do projeto" width="360" height="180" loading="lazy" decoding="async">
                     </div>
                 </div>
             </div>
         </section>
-    </br>
         <section id="certificados" class="certificados">
             <h1>Certificados</h1>
             <div class="certificados-lista">
                 <div class="certificado">
                     <h2>Python / Devmedia</h2>
-                    <img src="img/Certificados/Certificado Python Devmedia.png" alt="Certificado Devmedia" width="300" height="200">
+                    <img src="img/Certificados/Certificado Python Devmedia.png" alt="Certificado Devmedia" width="300" height="200" loading="lazy" decoding="async">
                 </div>
                 <div class="certificado">
                     <h2>React + Typescript (Full-Stack) / Udemy</h2>
-                    <img src="img/Certificados/Certificado Udemy (Full-Stack com react e ts).jpg" alt="Certificado Udemy" width="300" height="200">
+                    <img src="img/Certificados/Certificado Udemy (Full-Stack com react e ts).jpg" alt="Certificado Udemy" width="300" height="200" loading="lazy" decoding="async">
                 </div>
                 <div class="certificado">
                     <h2>Next.js / Udemy</h2>
-                    <img src="img/Certificados/NEXTJS.jpg" alt="Certificado Next.js" width="300" height="200">
+                    <img src="img/Certificados/NEXTJS.jpg" alt="Certificado Next.js" width="300" height="200" loading="lazy" decoding="async">
                 </div>
                 <div class="certificado">
                     <h2>Workshop "Tech é pra mim? Descubra sua carreira digital em 2 dias" / EBAC</h2>
-                    <img src="img/Certificados/Workshop EBAC.jpeg" alt="Certificado Workshop EBAC" width="300" height="200">
+                    <img src="img/Certificados/Workshop EBAC.jpeg" alt="Certificado Workshop EBAC" width="300" height="200" loading="lazy" decoding="async">
                 </div>
             </div>
         </section>
-    </br>
         <section class="metas">
             <div class="meta">
                 <h2>"Um de meus maiores objetivos como desenvolvedor é facilitar, ampliar e agilizar a comunicação e os processos rotineiros e cotidianos das pessoas usando a tecnologia como meio de desenvolver ferramentas voltadas a este proposito."</h2>
                 <div class="sign">
-                    <p2>Daniel Costa.</p2>
+                    <p>Daniel Costa.</p>
                 </div>
             </div>
         </section>
@@ -473,9 +508,9 @@
     </section>
     <footer>
         <div id="sobre" class="desenvolvedor">
-            <ol><p>Página desenvolvida por Daniel Costa Carvalho Martins</p></ol>
-            <ol><a href="mailto:danielcostacarvalhomartins06@gmail.com">danielcostacarvalhomartins06@gmail.com</a></ol>
-            <ol><a href="https://devthreebydanielcosta.vercel.app" target="_blank">Saiba mais</a></ol>
+            <p>Página desenvolvida por Daniel Costa Carvalho Martins</p>
+            <p><a href="mailto:danielcostacarvalhomartins06@gmail.com">danielcostacarvalhomartins06@gmail.com</a></p>
+            <p><a href="https://devthreebydanielcosta.vercel.app" target="_blank" rel="noopener noreferrer">Saiba mais</a></p>
         </div>
     </footer>
 </body>

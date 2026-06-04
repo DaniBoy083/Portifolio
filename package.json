@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "prebuild": "node scripts/generate-build-meta.cjs",
+    "validate": "node scripts/validate-markup.cjs",
     "build": "tsc",
     "watch": "npm run prebuild && tsc -w"
   },

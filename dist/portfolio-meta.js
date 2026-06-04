@@ -1,5 +1,50 @@
 "use strict";
 const GITHUB_MAIN_COMMIT_API_URL = 'https://api.github.com/repos/DaniBoy083/Portifolio/commits/main';
+const TECHNOLOGY_TITLE_SELECTORS = [
+    '#linguagens .linguagem h2',
+    '#bibliotecas .biblioteca h2',
+    '#frameworks .framework h2',
+    '#bancos-de-dados .banco-de-dado h2',
+    '#virtualizações .virtualização h2'
+];
+function cleanSummaryText(value) {
+    return (value || '').replace(/\s+/g, ' ').trim();
+}
+function countUniqueTextBySelectors(selectors) {
+    const values = selectors.reduce((accumulator, selector) => {
+        const selectorValues = Array.from(document.querySelectorAll(selector))
+            .map((item) => cleanSummaryText(item.textContent))
+            .filter(Boolean);
+        return accumulator.concat(selectorValues);
+    }, []);
+    return new Set(values).size;
+}
+function collectSummaryPanelCounts() {
+    return {
+        technologies: countUniqueTextBySelectors(TECHNOLOGY_TITLE_SELECTORS),
+        formations: document.querySelectorAll('#formações .formação').length,
+        certificates: document.querySelectorAll('#certificados .certificado').length,
+        projects: document.querySelectorAll('#projetos .projeto').length
+    };
+}
+function setSummaryPanelValue(elementId, value) {
+    const target = document.getElementById(elementId);
+    if (!target) {
+        return;
+    }
+    target.textContent = new Intl.NumberFormat('pt-BR').format(value);
+}
+function updateSummaryPanel() {
+    const panel = document.getElementById('painel-resumo');
+    if (!panel) {
+        return;
+    }
+    const counts = collectSummaryPanelCounts();
+    setSummaryPanelValue('resumo-tecnologias', counts.technologies);
+    setSummaryPanelValue('resumo-formacoes', counts.formations);
+    setSummaryPanelValue('resumo-certificados', counts.certificates);
+    setSummaryPanelValue('resumo-projetos', counts.projects);
+}
 function parseDate(value) {
     if (!value) {
         return null;
@@ -84,4 +129,5 @@ function updateCurrentSemesterLabel() {
 document.addEventListener('DOMContentLoaded', () => {
     void updateLastUpdatedLabel();
     updateCurrentSemesterLabel();
+    updateSummaryPanel();
 });
