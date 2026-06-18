@@ -589,6 +589,17 @@ section .repositorio-da-pagina a:hover {
     object-fit: contain;
 }
 
+.biblioteca img.logo-kivy {
+    width: 130px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.projeto .projeto-img:first-of-type img.logo-kivy {
+    width: 50px;
+    height: 20px;
+}
+
 .projeto .projeto-img img.screenshot {
     width: 100%;
     max-width: 360px;

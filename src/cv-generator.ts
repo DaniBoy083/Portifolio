@@ -22,6 +22,7 @@ interface PortfolioSnapshot {
     linkedInUrl: string;
     githubUrl: string;
     softSkills: string[];
+    readings: string[];
     languages: string[];
     libraries: string[];
     frameworks: string[];
@@ -230,6 +231,26 @@ function getListText(selector: string): string[] {
     return Array.from(new Set(values));
 }
 
+function getReadings(): string[] {
+    const readingNodes = Array.from(document.querySelectorAll('#leituras .estudo'));
+
+    const readings = readingNodes
+        .map((node) => {
+            const title = cleanText(node.querySelector('h2')?.textContent);
+            const statusRaw = cleanText(node.querySelector('p')?.textContent);
+            const status = statusRaw.replace(/^status\s*:\s*/i, '').trim();
+
+            if (!title) {
+                return '';
+            }
+
+            return status ? `${title} (${status})` : title;
+        })
+        .filter(Boolean);
+
+    return Array.from(new Set(readings));
+}
+
 function getProjects(): ProjectSummary[] {
     const projectNodes = Array.from(document.querySelectorAll('.projeto'));
 
@@ -290,6 +311,7 @@ function collectPortfolioSnapshot(): PortfolioSnapshot {
         linkedInUrl: links.linkedInUrl,
         githubUrl: links.githubUrl,
         softSkills: getListText('#soft-skills .soft-skill h2'),
+        readings: getReadings(),
         languages: getListText('#linguagens .linguagem h2'),
         libraries: getListText('#bibliotecas .biblioteca h2'),
         frameworks: getListText('#frameworks .framework h2'),
@@ -561,6 +583,11 @@ async function drawCurriculumPdf(snapshot: PortfolioSnapshot, mode: CurriculumMo
         'Liderança'
     ];
 
+    const defaultReadingItems = [
+        'Arquitetura limpa (concluído)',
+        'Código limpo (em andamento)'
+    ];
+
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(PORTFOLIO_URL)}`;
     const logoImage = document.getElementById('logo') as HTMLImageElement | null;
     const profilePhotoPath = logoImage?.getAttribute('src') || 'img/Placeholders/minhafoto.jpg';
@@ -574,8 +601,8 @@ async function drawCurriculumPdf(snapshot: PortfolioSnapshot, mode: CurriculumMo
 
     const embeddedCertificateAttachments = getEmbeddedCertificateAttachments();
     const certificateAttachmentData = embeddedCertificateAttachments.length
-        ? embeddedCertificateAttachments.map((attachment) => ({
-            title: attachment.title,
+        ? embeddedCertificateAttachments.map((attachment, index) => ({
+            title: snapshot.certifications[index] || attachment.title,
             dataUrl: attachment.dataUrl,
             format: detectImageFormat(attachment.dataUrl)
         }))
@@ -651,6 +678,11 @@ async function drawCurriculumPdf(snapshot: PortfolioSnapshot, mode: CurriculumMo
     y = ensurePage(doc, y, 26);
     y = drawSectionTitle(doc, 'COMPETÊNCIAS COMPORTAMENTAIS', y);
     y = drawBulletList(doc, snapshot.softSkills.length ? snapshot.softSkills : defaultSoftSkills, y, 16, 176);
+    y += 3;
+
+    y = ensurePage(doc, y, 26);
+    y = drawSectionTitle(doc, 'LEITURAS', y);
+    y = drawBulletList(doc, snapshot.readings.length ? snapshot.readings : defaultReadingItems, y, 16, 176);
     y += 3;
 
     y = ensurePage(doc, y, 56);
