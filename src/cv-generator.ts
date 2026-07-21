@@ -529,7 +529,7 @@ function drawPersonalInfoBlock(doc: JsPdfInstance, snapshot: PortfolioSnapshot, 
     });
 
     rightLines.forEach((line) => {
-        const lines = doc.split, 84);
+        const lines = doc.splitTextToSize(line, 84);
         doc.text(lines, rightX, yRight);
         yRight += lines.length * 5.1;
     });
