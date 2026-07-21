@@ -529,7 +529,7 @@ function drawPersonalInfoBlock(doc: JsPdfInstance, snapshot: PortfolioSnapshot, 
     });
 
     rightLines.forEach((line) => {
-        const lines = doc.splitTextToSize(line, 84);
+        const lines = doc.split, 84);
         doc.text(lines, rightX, yRight);
         yRight += lines.length * 5.1;
     });
@@ -628,7 +628,7 @@ async function drawCurriculumPdf(snapshot: PortfolioSnapshot, mode: CurriculumMo
             doc.addImage(profilePhotoDataUrl, detectImageFormat(profilePhotoDataUrl), 164, 12, 30, 30);
         }
     } catch {
-        // Nao interrompe a geracao do curriculo caso a foto falhe.
+        // Não interrompe a geração do currículo caso a foto falhe.
     }
 
     if (qrDataUrl) {
