@@ -443,7 +443,7 @@ async function drawCurriculumPdf(snapshot, mode, fileName) {
         }
     }
     catch {
-        // Nao interrompe a geracao do curriculo caso a foto falhe.
+        // Não interrompe a geração do currículo caso a foto falhe.
     }
     if (qrDataUrl) {
         doc.addImage(qrDataUrl, 'PNG', 166, 50, 26, 26);
