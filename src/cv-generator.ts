@@ -438,7 +438,8 @@ function drawProjects(doc: JsPdfInstance, projects: ProjectSummary[], mode: Curr
     let y = cursorY;
     selected.forEach((project) => {
         const description = mode === 'curto'
-            ? `${(project.description || 'Não informado').slice(0, 125)}${project.description.length > 125 ? '...' : ''}`
+            ? `${(project.description || 'Não informado').slice(0, 125)}${project.description.length > 12
+                ? '...' : ''}`
             : `${(project.description || 'Não informado').slice(0, 210)}${(project.description || '').length > 210 ? '...' : ''}`;
 
         const estimatedLines = Math.max(2, Math.ceil(description.length / (mode === 'curto' ? 84 : 92)));
@@ -542,4 +543,10 @@ function drawPersonalInfoBlock(doc: JsPdfInstance, snapshot: PortfolioSnapshot, 
     });
 
     rightLines.forEach((line) => {
-        const lines = doc.splitTextTo
+        const lines = doc.splitTextToSize(line, 88);
+        doc.text(lines, rightX, yRight);
+        yRight += lines.length * 5.1;
+    });
+
+    return Math.max(yLeft, yRight);
+}
