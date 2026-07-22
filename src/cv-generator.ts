@@ -90,6 +90,21 @@ const PERSONAL_INFO: PersonalProfileInfo = {
 };
 
 const PORTFOLIO_URL = 'https://portifoliodanielcosta.netlify.app';
+const IMAGE_LOAD_TIMEOUT_MS = 8000;
+const PAGE_BOTTOM_LIMIT = 286;
+const DEFAULT_PAGE_TOP = 18;
+const PDF_FILE_PREFIX = 'curriculo-daniel-costa';
+
+interface PreparedCertificateAttachment {
+    title: string;
+    dataUrl: string;
+    format: ImageFormat;
+}
+
+interface CurriculumWindow extends Window {
+    gerarCurriculo?: (mode?: CurriculumMode) => Promise<void>;
+    generateCurriculum?: (mode?: CurriculumMode) => Promise<void>;
+}
 
 function notify(message: string, type: ToastKind = 'info'): void {
     const toastApi = (window as Window & {
@@ -134,25 +149,99 @@ function getEmbeddedCertificateAttachments(): EmbeddedCertificateAttachment[] {
     );
 }
 
+function isSafeImageUrl(url: URL): boolean {
+    return ['http:', 'https:', 'data:', 'blob:'].includes(url.protocol);
+}
+
 async function loadImageAsDataUrl(url: string): Promise<string | null> {
+    if (!url) {
+        return null;
+    }
+
     try {
-        const normalizedUrl = new URL(url, window.location.href).href;
-        const response = await fetch(normalizedUrl);
+        const normalizedUrl = new URL(url, window.location.href);
+        if (!isSafeImageUrl(normalizedUrl)) {
+            return null;
+        }
+
+        const response = await fetch(normalizedUrl.href, {
+            credentials: normalizedUrl.origin === window.location.origin ? 'same-origin' : 'omit'
+        });
+
         if (!response.ok) {
             return null;
         }
 
         const blob = await response.blob();
+        if (!blob.type.startsWith('image/')) {
+            return null;
+        }
 
-        return await new Promise<string>((resolve, reject) => {
+        return await new Promise<string | null>((resolve) => {
             const reader = new FileReader();
-            reader.onload = () => resolve(String(reader.result || ''));
-            reader.onerror = () => reject(new Error('Falha ao converter imagem'));
+            reader.onload = () => {
+                const result = typeof reader.result === 'string' ? reader.result : '';
+                resolve(result.startsWith('data:image/') ? result : null);
+            };
+            reader.onerror = () => resolve(null);
             reader.readAsDataURL(blob);
         });
-    } catch {
+    } catch (error) {
+        console.warn('Não foi possível carregar uma imagem do portfólio.', error);
         return null;
     }
+}
+
+function getImageSource(imageElement: HTMLImageElement): string {
+    return imageElement.currentSrc
+        || imageElement.getAttribute('src')
+        || imageElement.src
+        || '';
+}
+
+async function waitForImageElement(imageElement: HTMLImageElement): Promise<void> {
+    if (imageElement.loading === 'lazy') {
+        imageElement.loading = 'eager';
+    }
+
+    if (imageElement.complete && imageElement.naturalWidth > 0 && imageElement.naturalHeight > 0) {
+        return;
+    }
+
+    await new Promise<void>((resolve, reject) => {
+        let settled = false;
+
+        const cleanup = (): void => {
+            window.clearTimeout(timeoutId);
+            imageElement.removeEventListener('load', onLoad);
+            imageElement.removeEventListener('error', onError);
+        };
+
+        const settle = (callback: () => void): void => {
+            if (settled) {
+                return;
+            }
+
+            settled = true;
+            cleanup();
+            callback();
+        };
+
+        const onLoad = (): void => settle(resolve);
+        const onError = (): void => settle(() => reject(new Error('Falha ao carregar imagem do elemento')));
+
+        const timeoutId = window.setTimeout(() => {
+            settle(() => reject(new Error('Timeout ao carregar imagem do elemento')));
+        }, IMAGE_LOAD_TIMEOUT_MS);
+
+        imageElement.addEventListener('load', onLoad, { once: true });
+        imageElement.addEventListener('error', onError, { once: true });
+
+        const source = getImageSource(imageElement);
+        if (source && !imageElement.getAttribute('src')) {
+            imageElement.src = source;
+        }
+    });
 }
 
 async function imageElementToDataUrl(imageElement: HTMLImageElement | null): Promise<string | null> {
@@ -160,55 +249,39 @@ async function imageElementToDataUrl(imageElement: HTMLImageElement | null): Pro
         return null;
     }
 
-    const loadIfNeeded = async (): Promise<void> => {
-        if (imageElement.complete && imageElement.naturalWidth > 0) {
-            return;
-        }
-
-        if (imageElement.complete && imageElement.naturalWidth === 0) {
-            throw new Error('Imagem do elemento indisponivel');
-        }
-
-        await new Promise<void>((resolve, reject) => {
-            const timeoutId = window.setTimeout(() => {
-                imageElement.removeEventListener('load', onLoad);
-                imageElement.removeEventListener('error', onError);
-                reject(new Error('Timeout ao carregar imagem do elemento'));
-            }, 3500);
-
-            const onLoad = () => {
-                window.clearTimeout(timeoutId);
-                imageElement.removeEventListener('load', onLoad);
-                imageElement.removeEventListener('error', onError);
-                resolve();
-            };
-            const onError = () => {
-                window.clearTimeout(timeoutId);
-                imageElement.removeEventListener('load', onLoad);
-                imageElement.removeEventListener('error', onError);
-                reject(new Error('Falha ao carregar imagem do elemento'));
-            };
-
-            imageElement.addEventListener('load', onLoad);
-            imageElement.addEventListener('error', onError);
-        });
-    };
+    const source = getImageSource(imageElement);
 
     try {
-        await loadIfNeeded();
+        await waitForImageElement(imageElement);
+
+        if (typeof imageElement.decode === 'function') {
+            try {
+                await imageElement.decode();
+            } catch {
+                // Alguns navegadores rejeitam decode() mesmo depois de a imagem carregar.
+                // As dimensões naturais abaixo continuam sendo a validação definitiva.
+            }
+        }
+
+        if (imageElement.naturalWidth <= 0 || imageElement.naturalHeight <= 0) {
+            return source ? loadImageAsDataUrl(source) : null;
+        }
+
         const canvas = document.createElement('canvas');
         canvas.width = imageElement.naturalWidth;
         canvas.height = imageElement.naturalHeight;
+
         const context = canvas.getContext('2d');
         if (!context) {
-            return null;
+            return source ? loadImageAsDataUrl(source) : null;
         }
 
         context.drawImage(imageElement, 0, 0);
-        return canvas.toDataURL('image/jpeg', 0.92);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+        return dataUrl.startsWith('data:image/') ? dataUrl : null;
     } catch (error) {
-        console.error('Erro na conversão da imagem:', error);
-        return null;
+        console.warn('Falha ao converter uma imagem do DOM; usando o caminho como fallback.', error);
+        return source ? loadImageAsDataUrl(source) : null;
     }
 }
 
@@ -282,18 +355,6 @@ function getProfileLinks(): { linkedInUrl: string; githubUrl: string } {
 function getCertificateAttachments(): CertificateAttachment[] {
     const certificateNodes = Array.from(document.querySelectorAll('#certificados .certificado'));
 
-    console.groupCollapsed('getCertificateAttachments - Certificados encontrados');
-    console.table(certificateNodes.map((node, index) => ({
-        índice: index,
-        título: cleanText(node.querySelector('h2')?.textContent) || 'Certificado',
-        currentSrc: (node.querySelector('img') as HTMLImageElement | null)?.currentSrc || '',
-        src: (node.querySelector('img') as HTMLImageElement | null)?.src || '',
-        complete: (node.querySelector('img') as HTMLImageElement | null)?.complete || false,
-        naturalWidth: (node.querySelector('img') as HTMLImageElement | null)?.naturalWidth || 0,
-        naturalHeight: (node.querySelector('img') as HTMLImageElement | null)?.naturalHeight || 0
-    })));
-    console.groupEnd();
-
     return certificateNodes.map((node) => {
         const title = cleanText(node.querySelector('h2')?.textContent) || 'Certificado';
         const image = node.querySelector('img') as HTMLImageElement | null;
@@ -304,7 +365,7 @@ function getCertificateAttachments(): CertificateAttachment[] {
             src: srcFromDom,
             imageElement: image
         };
-    }).filter((item) => Boolean(item.src));
+    }).filter((item) => Boolean(item.src || item.imageElement));
 }
 
 function getEmail(): string {
@@ -386,12 +447,12 @@ function summarizeSkillItems(items: string[], maxItems: number): string[] {
 }
 
 function ensurePage(doc: JsPdfInstance, cursorY: number, neededHeight: number): number {
-    if (cursorY + neededHeight <= 286) {
+    if (cursorY + neededHeight <= PAGE_BOTTOM_LIMIT) {
         return cursorY;
     }
 
     doc.addPage();
-    return 18;
+    return DEFAULT_PAGE_TOP;
 }
 
 function drawCertificateAttachments(
@@ -438,7 +499,7 @@ function drawProjects(doc: JsPdfInstance, projects: ProjectSummary[], mode: Curr
     let y = cursorY;
     selected.forEach((project) => {
         const description = mode === 'curto'
-            ? `${(project.description || 'Não informado').slice(0, 125)}${project.description.length > 12
+            ? `${(project.description || 'Não informado').slice(0, 125)}${project.description.length > 125
                 ? '...' : ''}`
             : `${(project.description || 'Não informado').slice(0, 210)}${(project.description || '').length > 210 ? '...' : ''}`;
 
@@ -503,15 +564,30 @@ function getCurrentAcademicPeriod(basePeriod: number, baseYear: number, baseMont
     return Math.min(10, basePeriod + semesterSteps);
 }
 
-function drawPersonalInfoBlock(doc: JsPdfInstance, snapshot: PortfolioSnapshot, cursorY: number): number {
+function drawPersonalInfoBlock(
+    doc: JsPdfInstance,
+    snapshot: PortfolioSnapshot,
+    cursorY: number,
+    photoDataUrl: string | null
+): number {
     const leftX = 14;
     const rightX = 112;
+    const leftWidth = 88;
+    const rightWidth = photoDataUrl ? 52 : 84;
 
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(11.5);
     doc.setTextColor(18, 18, 18);
     doc.text(snapshot.name || 'Daniel Costa', leftX, cursorY);
-    doc.text('Desenvolvedor', 94, cursorY);
+    doc.text(snapshot.role || 'Desenvolvedor', 94, cursorY);
+
+    if (photoDataUrl) {
+        try {
+            doc.addImage(photoDataUrl, detectImageFormat(photoDataUrl), 169, cursorY - 5, 27, 27);
+        } catch (error) {
+            console.warn('A foto de perfil não pôde ser adicionada ao PDF.', error);
+        }
+    }
 
     let yLeft = cursorY + 8;
     let yRight = cursorY + 8;
@@ -537,16 +613,315 @@ function drawPersonalInfoBlock(doc: JsPdfInstance, snapshot: PortfolioSnapshot, 
     doc.setTextColor(24, 24, 24);
 
     leftLines.forEach((line) => {
-        const lines = doc.splitTextToSize(line, 88);
+        const lines = doc.splitTextToSize(line, leftWidth);
         doc.text(lines, leftX, yLeft);
         yLeft += lines.length * 5.1;
     });
 
     rightLines.forEach((line) => {
-        const lines = doc.splitTextToSize(line, 88);
+        const lines = doc.splitTextToSize(line, rightWidth);
         doc.text(lines, rightX, yRight);
         yRight += lines.length * 5.1;
     });
 
-    return Math.max(yLeft, yRight);
+    return Math.max(yLeft, yRight, photoDataUrl ? cursorY + 24 : cursorY);
+}
+
+function isValidWebUrl(value: string): boolean {
+    if (!value) {
+        return false;
+    }
+
+    try {
+        const url = new URL(value);
+        return url.protocol === 'http:' || url.protocol === 'https:';
+    } catch {
+        return false;
+    }
+}
+
+function getProfileImageElement(): HTMLImageElement | null {
+    const selectors = [
+        '.topo-foto img',
+        '.foto-perfil img',
+        '.minha-foto img',
+        'img[src*="minhafoto"]',
+        'img[alt*="Daniel"]'
+    ];
+
+    for (const selector of selectors) {
+        const image = document.querySelector(selector) as HTMLImageElement | null;
+        if (image) {
+            return image;
+        }
+    }
+
+    return null;
+}
+
+async function resolveProfilePhotoDataUrl(): Promise<string | null> {
+    const embeddedPhoto = getEmbeddedPhotoDataUrl();
+    if (embeddedPhoto.startsWith('data:image/')) {
+        return embeddedPhoto;
+    }
+
+    return imageElementToDataUrl(getProfileImageElement());
+}
+
+function isPreparedCertificateAttachment(
+    value: PreparedCertificateAttachment | null
+): value is PreparedCertificateAttachment {
+    return Boolean(value?.dataUrl.startsWith('data:image/'));
+}
+
+function getFileNameFromPath(value: string): string {
+    if (!value) {
+        return '';
+    }
+
+    try {
+        const url = new URL(value, window.location.href);
+        const encodedFileName = url.pathname.split('/').pop() || '';
+        return decodeURIComponent(encodedFileName);
+    } catch {
+        const normalizedPath = value.replace(/\\/g, '/');
+        return normalizedPath.split('/').pop() || normalizedPath;
+    }
+}
+
+function normalizeCertificateAssetKey(value: string): string {
+    const fileName = getFileNameFromPath(value) || value;
+
+    return fileName
+        .replace(/\.[a-z0-9]+$/i, '')
+        .replace(/[_-]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .normalize('NFC')
+        .toLocaleLowerCase('pt-BR');
+}
+
+async function prepareCertificateAttachment(
+    attachment: CertificateAttachment,
+    embeddedByAssetKey: ReadonlyMap<string, EmbeddedCertificateAttachment>
+): Promise<PreparedCertificateAttachment | null> {
+    const assetKey = normalizeCertificateAssetKey(attachment.src);
+    const embedded = embeddedByAssetKey.get(assetKey);
+
+    // O anexo incorporado no build é a fonte mais confiável: não depende de
+    // lazy loading, posição na página, CORS ou disponibilidade do servidor local.
+    const dataUrl = embedded?.dataUrl
+        || await imageElementToDataUrl(attachment.imageElement)
+        || await loadImageAsDataUrl(attachment.src)
+        || '';
+
+    if (!dataUrl.startsWith('data:image/')) {
+        return null;
+    }
+
+    return {
+        title: attachment.title,
+        dataUrl,
+        format: detectImageFormat(dataUrl)
+    };
+}
+
+async function prepareCertificateAttachments(
+    attachments: CertificateAttachment[]
+): Promise<PreparedCertificateAttachment[]> {
+    const embeddedByAssetKey = new Map(
+        getEmbeddedCertificateAttachments().map((attachment) => [
+            normalizeCertificateAssetKey(attachment.title),
+            attachment
+        ])
+    );
+
+    const results = await Promise.all(
+        attachments.map((attachment) => prepareCertificateAttachment(attachment, embeddedByAssetKey))
+    );
+
+    return results.filter(isPreparedCertificateAttachment);
+}
+
+function drawContactLinks(doc: JsPdfInstance, snapshot: PortfolioSnapshot, cursorY: number): number {
+    let y = cursorY;
+
+    if (snapshot.email) {
+        const emailUrl = `mailto:${snapshot.email}`;
+        y = drawLinkLine(doc, 'E-mail', snapshot.email, emailUrl, y);
+    }
+
+    if (isValidWebUrl(snapshot.linkedInUrl)) {
+        y = drawLinkLine(doc, 'LinkedIn', snapshot.linkedInUrl, snapshot.linkedInUrl, y + 1);
+    }
+
+    if (isValidWebUrl(snapshot.githubUrl)) {
+        y = drawLinkLine(doc, 'GitHub', snapshot.githubUrl, snapshot.githubUrl, y + 1);
+    }
+
+    y = drawLinkLine(doc, 'Portfólio', PORTFOLIO_URL, PORTFOLIO_URL, y + 1);
+    return y;
+}
+
+function drawMainCurriculumContent(
+    doc: JsPdfInstance,
+    snapshot: PortfolioSnapshot,
+    mode: CurriculumMode,
+    photoDataUrl: string | null
+): void {
+    let cursorY = DEFAULT_PAGE_TOP;
+    cursorY = drawPersonalInfoBlock(doc, snapshot, cursorY, photoDataUrl) + 5;
+
+    cursorY = ensurePage(doc, cursorY, 30);
+    cursorY = drawSectionTitle(doc, 'RESUMO PROFISSIONAL', cursorY);
+    cursorY = drawParagraph(
+        doc,
+        snapshot.summary || 'Profissional de tecnologia em formação, com foco em desenvolvimento de software e análise de dados.',
+        cursorY
+    ) + 3;
+
+    cursorY = ensurePage(doc, cursorY, 26);
+    cursorY = drawSectionTitle(doc, 'FORMAÇÃO ACADÊMICA', cursorY);
+    const academicPeriod = getCurrentAcademicPeriod(6, 2026, 6);
+    cursorY = drawParagraph(
+        doc,
+        `Ciência da Computação — ${academicPeriod}º período em andamento.`,
+        cursorY,
+        16,
+        178
+    ) + 3;
+
+    cursorY = ensurePage(doc, cursorY, 70);
+    cursorY = drawSectionTitle(doc, 'COMPETÊNCIAS TÉCNICAS', cursorY);
+    const maxItems = mode === 'curto' ? 6 : Number.MAX_SAFE_INTEGER;
+    cursorY = drawSkillColumns(doc, cursorY, [
+        { title: 'Linguagens', items: summarizeSkillItems(snapshot.languages, maxItems) },
+        { title: 'Frameworks', items: summarizeSkillItems(snapshot.frameworks, maxItems) },
+        { title: 'Bibliotecas', items: summarizeSkillItems(snapshot.libraries, maxItems) },
+        { title: 'Bancos de dados', items: summarizeSkillItems(snapshot.databases, maxItems) },
+        { title: 'Virtualização e ferramentas', items: summarizeSkillItems(snapshot.virtualization, maxItems) }
+    ]) + 3;
+
+    cursorY = ensurePage(doc, cursorY, 35);
+    cursorY = drawSectionTitle(doc, 'SOFT SKILLS', cursorY);
+    cursorY = drawBulletList(
+        doc,
+        mode === 'curto' ? snapshot.softSkills.slice(0, 6) : snapshot.softSkills,
+        cursorY
+    ) + 3;
+
+    cursorY = ensurePage(doc, cursorY, 35);
+    cursorY = drawSectionTitle(doc, 'CERTIFICAÇÕES', cursorY);
+    cursorY = drawBulletList(
+        doc,
+        mode === 'curto' ? snapshot.certifications.slice(0, 8) : snapshot.certifications,
+        cursorY
+    ) + 3;
+
+    cursorY = ensurePage(doc, cursorY, 45);
+    cursorY = drawSectionTitle(doc, 'PROJETOS', cursorY);
+    cursorY = drawProjects(doc, snapshot.projects, mode, cursorY) + 3;
+
+    if (mode === 'completo') {
+        cursorY = ensurePage(doc, cursorY, 35);
+        cursorY = drawSectionTitle(doc, 'LEITURAS E DESENVOLVIMENTO', cursorY);
+        cursorY = drawBulletList(doc, snapshot.readings, cursorY) + 3;
+    }
+
+    cursorY = ensurePage(doc, cursorY, 40);
+    cursorY = drawSectionTitle(doc, 'CONTATO', cursorY);
+    drawContactLinks(doc, snapshot, cursorY);
+}
+
+async function drawCurriculumPdf(mode: CurriculumMode = 'completo'): Promise<void> {
+    const JsPdfConstructor = getJsPdf();
+    if (!JsPdfConstructor) {
+        notify('Não foi possível carregar o gerador de PDF. Atualize a página e tente novamente.', 'error');
+        return;
+    }
+
+    const snapshot = collectPortfolioSnapshot();
+    if (!snapshot.email) {
+        notify('O e-mail de contato não foi encontrado no portfólio.', 'error');
+        return;
+    }
+
+    notify('Preparando o currículo em PDF...', 'info');
+
+    try {
+        const [photoDataUrl, certificateAttachments] = await Promise.all([
+            resolveProfilePhotoDataUrl(),
+            prepareCertificateAttachments(snapshot.certificateAttachments)
+        ]);
+
+        const doc = new JsPdfConstructor();
+        drawMainCurriculumContent(doc, snapshot, mode, photoDataUrl);
+
+        if (certificateAttachments.length > 0) {
+            drawCertificateAttachments(doc, certificateAttachments);
+        } else {
+            console.warn('Nenhuma imagem de certificado válida foi encontrada para anexar ao PDF.');
+        }
+
+        const suffix = mode === 'curto' ? 'curto' : 'completo';
+        doc.save(`${PDF_FILE_PREFIX}-${suffix}.pdf`);
+        notify('Currículo gerado com sucesso.', 'success');
+    } catch (error) {
+        console.error('Erro ao gerar currículo:', error);
+        notify('Não foi possível gerar o currículo. Verifique o console e tente novamente.', 'error');
+    }
+}
+
+function normalizeCurriculumMode(value: string | null | undefined): CurriculumMode {
+    return value?.toLocaleLowerCase('pt-BR').includes('curto') ? 'curto' : 'completo';
+}
+
+function inferCurriculumMode(element: HTMLElement): CurriculumMode {
+    const explicitMode = element.dataset.curriculumMode || element.dataset.mode;
+    if (explicitMode) {
+        return normalizeCurriculumMode(explicitMode);
+    }
+
+    return normalizeCurriculumMode(`${element.id} ${element.textContent || ''}`);
+}
+
+function getCurriculumButtons(): HTMLElement[] {
+    const selectors = [
+        '[data-curriculum-mode]',
+        '[data-action="gerar-curriculo"]',
+        '#gerar-curriculo',
+        '#gerar-curriculo-curto',
+        '#gerar-curriculo-completo',
+        '#baixar-curriculo',
+        '#baixar-curriculo-curto',
+        '#baixar-curriculo-completo',
+        '.gerar-curriculo',
+        '.baixar-curriculo'
+    ];
+
+    return Array.from(document.querySelectorAll<HTMLElement>(selectors.join(',')));
+}
+
+function bindCurriculumButtons(): void {
+    getCurriculumButtons().forEach((button) => {
+        if (button.dataset.curriculumBound === 'true') {
+            return;
+        }
+
+        button.dataset.curriculumBound = 'true';
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            void drawCurriculumPdf(inferCurriculumMode(button));
+        });
+    });
+}
+
+const curriculumWindow = window as CurriculumWindow;
+curriculumWindow.gerarCurriculo = drawCurriculumPdf;
+curriculumWindow.generateCurriculum = drawCurriculumPdf;
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindCurriculumButtons, { once: true });
+} else {
+    bindCurriculumButtons();
 }

@@ -13,6 +13,10 @@ const PERSONAL_INFO = {
     genero: 'Masculino'
 };
 const PORTFOLIO_URL = 'https://portifoliodanielcosta.netlify.app';
+const IMAGE_LOAD_TIMEOUT_MS = 8000;
+const PAGE_BOTTOM_LIMIT = 286;
+const DEFAULT_PAGE_TOP = 18;
+const PDF_FILE_PREFIX = 'curriculo-daniel-costa';
 function notify(message, type = 'info') {
     const toastApi = window.showToast;
     if (toastApi) {
@@ -39,72 +43,117 @@ function getEmbeddedCertificateAttachments() {
         typeof item.dataUrl === 'string' &&
         item.dataUrl.startsWith('data:image/'));
 }
+function isSafeImageUrl(url) {
+    return ['http:', 'https:', 'data:', 'blob:'].includes(url.protocol);
+}
 async function loadImageAsDataUrl(url) {
+    if (!url) {
+        return null;
+    }
     try {
-        const normalizedUrl = new URL(url, window.location.href).href;
-        const response = await fetch(normalizedUrl);
+        const normalizedUrl = new URL(url, window.location.href);
+        if (!isSafeImageUrl(normalizedUrl)) {
+            return null;
+        }
+        const response = await fetch(normalizedUrl.href, {
+            credentials: normalizedUrl.origin === window.location.origin ? 'same-origin' : 'omit'
+        });
         if (!response.ok) {
             return null;
         }
         const blob = await response.blob();
-        return await new Promise((resolve, reject) => {
+        if (!blob.type.startsWith('image/')) {
+            return null;
+        }
+        return await new Promise((resolve) => {
             const reader = new FileReader();
-            reader.onload = () => resolve(String(reader.result || ''));
-            reader.onerror = () => reject(new Error('Falha ao converter imagem'));
+            reader.onload = () => {
+                const result = typeof reader.result === 'string' ? reader.result : '';
+                resolve(result.startsWith('data:image/') ? result : null);
+            };
+            reader.onerror = () => resolve(null);
             reader.readAsDataURL(blob);
         });
     }
-    catch {
+    catch (error) {
+        console.warn('Não foi possível carregar uma imagem do portfólio.', error);
         return null;
     }
+}
+function getImageSource(imageElement) {
+    return imageElement.currentSrc
+        || imageElement.getAttribute('src')
+        || imageElement.src
+        || '';
+}
+async function waitForImageElement(imageElement) {
+    if (imageElement.loading === 'lazy') {
+        imageElement.loading = 'eager';
+    }
+    if (imageElement.complete && imageElement.naturalWidth > 0 && imageElement.naturalHeight > 0) {
+        return;
+    }
+    await new Promise((resolve, reject) => {
+        let settled = false;
+        const cleanup = () => {
+            window.clearTimeout(timeoutId);
+            imageElement.removeEventListener('load', onLoad);
+            imageElement.removeEventListener('error', onError);
+        };
+        const settle = (callback) => {
+            if (settled) {
+                return;
+            }
+            settled = true;
+            cleanup();
+            callback();
+        };
+        const onLoad = () => settle(resolve);
+        const onError = () => settle(() => reject(new Error('Falha ao carregar imagem do elemento')));
+        const timeoutId = window.setTimeout(() => {
+            settle(() => reject(new Error('Timeout ao carregar imagem do elemento')));
+        }, IMAGE_LOAD_TIMEOUT_MS);
+        imageElement.addEventListener('load', onLoad, { once: true });
+        imageElement.addEventListener('error', onError, { once: true });
+        const source = getImageSource(imageElement);
+        if (source && !imageElement.getAttribute('src')) {
+            imageElement.src = source;
+        }
+    });
 }
 async function imageElementToDataUrl(imageElement) {
     if (!imageElement) {
         return null;
     }
-    const loadIfNeeded = async () => {
-        if (imageElement.complete && imageElement.naturalWidth > 0) {
-            return;
-        }
-        if (imageElement.complete && imageElement.naturalWidth === 0) {
-            throw new Error('Imagem do elemento indisponivel');
-        }
-        await new Promise((resolve, reject) => {
-            const timeoutId = window.setTimeout(() => {
-                imageElement.removeEventListener('load', onLoad);
-                imageElement.removeEventListener('error', onError);
-                reject(new Error('Timeout ao carregar imagem do elemento'));
-            }, 3500);
-            const onLoad = () => {
-                window.clearTimeout(timeoutId);
-                imageElement.removeEventListener('load', onLoad);
-                imageElement.removeEventListener('error', onError);
-                resolve();
-            };
-            const onError = () => {
-                window.clearTimeout(timeoutId);
-                imageElement.removeEventListener('load', onLoad);
-                imageElement.removeEventListener('error', onError);
-                reject(new Error('Falha ao carregar imagem do elemento'));
-            };
-            imageElement.addEventListener('load', onLoad);
-            imageElement.addEventListener('error', onError);
-        });
-    };
+    const source = getImageSource(imageElement);
     try {
-        await loadIfNeeded();
+        await waitForImageElement(imageElement);
+        if (typeof imageElement.decode === 'function') {
+            try {
+                await imageElement.decode();
+            }
+            catch {
+                // Alguns navegadores rejeitam decode() mesmo depois de a imagem carregar.
+                // As dimensões naturais abaixo continuam sendo a validação definitiva.
+            }
+        }
+        if (imageElement.naturalWidth <= 0 || imageElement.naturalHeight <= 0) {
+            return source ? loadImageAsDataUrl(source) : null;
+        }
         const canvas = document.createElement('canvas');
         canvas.width = imageElement.naturalWidth;
         canvas.height = imageElement.naturalHeight;
         const context = canvas.getContext('2d');
         if (!context) {
-            return null;
+            return source ? loadImageAsDataUrl(source) : null;
         }
         context.drawImage(imageElement, 0, 0);
-        return canvas.toDataURL('image/jpeg', 0.92);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+        return dataUrl.startsWith('data:image/') ? dataUrl : null;
     }
-    catch {
-        return null;
+    catch (error) {
+        console.warn('Falha ao converter uma imagem do DOM; usando o caminho como fallback.', error);
+        return source ? loadImageAsDataUrl(source) : null;
     }
 }
 function detectImageFormat(dataUrl) {
@@ -169,7 +218,7 @@ function getCertificateAttachments() {
             src: srcFromDom,
             imageElement: image
         };
-    }).filter((item) => Boolean(item.src));
+    }).filter((item) => Boolean(item.src || item.imageElement));
 }
 function getEmail() {
     const mailAnchor = document.querySelector('footer a[href^="mailto:"]');
@@ -240,11 +289,11 @@ function summarizeSkillItems(items, maxItems) {
     return items.slice(0, maxItems);
 }
 function ensurePage(doc, cursorY, neededHeight) {
-    if (cursorY + neededHeight <= 286) {
+    if (cursorY + neededHeight <= PAGE_BOTTOM_LIMIT) {
         return cursorY;
     }
     doc.addPage();
-    return 18;
+    return DEFAULT_PAGE_TOP;
 }
 function drawCertificateAttachments(doc, attachments) {
     if (!attachments.length) {
@@ -281,7 +330,8 @@ function drawProjects(doc, projects, mode, cursorY) {
     let y = cursorY;
     selected.forEach((project) => {
         const description = mode === 'curto'
-            ? `${(project.description || 'Não informado').slice(0, 125)}${project.description.length > 125 ? '...' : ''}`
+            ? `${(project.description || 'Não informado').slice(0, 125)}${project.description.length > 125
+                ? '...' : ''}`
             : `${(project.description || 'Não informado').slice(0, 210)}${(project.description || '').length > 210 ? '...' : ''}`;
         const estimatedLines = Math.max(2, Math.ceil(description.length / (mode === 'curto' ? 84 : 92)));
         const estimatedHeight = 15 + (estimatedLines * 4.8);
@@ -328,14 +378,24 @@ function getCurrentAcademicPeriod(basePeriod, baseYear, baseMonth) {
     const semesterSteps = Math.max(0, Math.floor(totalMonthsDiff / 6));
     return Math.min(10, basePeriod + semesterSteps);
 }
-function drawPersonalInfoBlock(doc, snapshot, cursorY) {
+function drawPersonalInfoBlock(doc, snapshot, cursorY, photoDataUrl) {
     const leftX = 14;
     const rightX = 112;
+    const leftWidth = 88;
+    const rightWidth = photoDataUrl ? 52 : 84;
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(11.5);
     doc.setTextColor(18, 18, 18);
     doc.text(snapshot.name || 'Daniel Costa', leftX, cursorY);
-    doc.text('Desenvolvedor', 94, cursorY);
+    doc.text(snapshot.role || 'Desenvolvedor', 94, cursorY);
+    if (photoDataUrl) {
+        try {
+            doc.addImage(photoDataUrl, detectImageFormat(photoDataUrl), 169, cursorY - 5, 27, 27);
+        }
+        catch (error) {
+            console.warn('A foto de perfil não pôde ser adicionada ao PDF.', error);
+        }
+    }
     let yLeft = cursorY + 8;
     let yRight = cursorY + 8;
     const leftLines = [
@@ -356,214 +416,235 @@ function drawPersonalInfoBlock(doc, snapshot, cursorY) {
     doc.setFontSize(10);
     doc.setTextColor(24, 24, 24);
     leftLines.forEach((line) => {
-        const lines = doc.splitTextToSize(line, 88);
+        const lines = doc.splitTextToSize(line, leftWidth);
         doc.text(lines, leftX, yLeft);
         yLeft += lines.length * 5.1;
     });
     rightLines.forEach((line) => {
-        const lines = doc.splitTextToSize(line, 84);
+        const lines = doc.splitTextToSize(line, rightWidth);
         doc.text(lines, rightX, yRight);
         yRight += lines.length * 5.1;
     });
-    const lineY = Math.max(yLeft, yRight) + 1;
-    doc.setDrawColor(24, 24, 24);
-    doc.setLineWidth(0.4);
-    doc.line(14, lineY, 196, lineY);
-    return lineY + 6;
+    return Math.max(yLeft, yRight, photoDataUrl ? cursorY + 24 : cursorY);
 }
-async function drawCurriculumPdf(snapshot, mode, fileName) {
-    const JsPdfCtor = getJsPdf();
-    if (!JsPdfCtor) {
-        throw new Error('jsPDF indisponível');
+function isValidWebUrl(value) {
+    if (!value) {
+        return false;
     }
-    const doc = new JsPdfCtor();
-    doc.setFillColor(255, 255, 255);
-    doc.rect(0, 0, 210, 297, 'F');
-    const generatedAt = new Intl.DateTimeFormat('pt-BR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-    }).format(new Date());
-    const semester = getCurrentAcademicPeriod(5, 2026, 0);
-    const formationItems = [
-        'Ensino Médio completo',
-        'Análise de Dados | EBAC (cursando)',
-        `Cursando Ciências da Computação no Centro Universitário de João Pessoa - ${semester}º semestre.`
-    ];
-    const professionalExperienceItems = [
-        'Desenvolvedor freelancer - Atualmente.',
-        'OSC AC Social (Pessoa Jurídica) - Assessor e consultor em tecnologia - Atualmente.'
-    ];
-    const spokenLanguages = [
-        'Português (língua materna)',
-        'Inglês (intermediário)',
-        'Espanhol (intermediário)'
-    ];
-    const defaultSoftSkills = [
-        'Comunicação',
-        'Trabalho em equipe',
-        'Tomada de decisão',
-        'Liderança'
-    ];
-    const defaultReadingItems = [
-        'Arquitetura limpa (concluído)',
-        'Código limpo (em andamento)'
-    ];
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(PORTFOLIO_URL)}`;
-    const logoImage = document.getElementById('logo');
-    const profilePhotoPath = logoImage?.getAttribute('src') || 'img/Placeholders/minhafoto.jpg';
-    const embeddedPhotoDataUrl = getEmbeddedPhotoDataUrl();
-    const profilePhotoDataUrl = embeddedPhotoDataUrl ||
-        await imageElementToDataUrl(logoImage) ||
-        await loadImageAsDataUrl(profilePhotoPath) ||
-        await loadImageAsDataUrl('img/Placeholders/minhafoto.jpg');
-    const qrDataUrl = await loadImageAsDataUrl(qrUrl);
-    const embeddedCertificateAttachments = getEmbeddedCertificateAttachments();
-    const certificateAttachmentData = embeddedCertificateAttachments.length
-        ? embeddedCertificateAttachments.map((attachment, index) => ({
-            title: snapshot.certifications[index] || attachment.title,
-            dataUrl: attachment.dataUrl,
-            format: detectImageFormat(attachment.dataUrl)
-        }))
-        : await Promise.all(snapshot.certificateAttachments.map(async (attachment) => {
-            const dataUrl = await imageElementToDataUrl(attachment.imageElement) ||
-                await loadImageAsDataUrl(attachment.src) ||
-                null;
-            return dataUrl
-                ? {
-                    title: attachment.title,
-                    dataUrl,
-                    format: detectImageFormat(dataUrl)
-                }
-                : null;
-        }));
     try {
-        if (profilePhotoDataUrl) {
-            doc.addImage(profilePhotoDataUrl, detectImageFormat(profilePhotoDataUrl), 164, 12, 30, 30);
-        }
+        const url = new URL(value);
+        return url.protocol === 'http:' || url.protocol === 'https:';
     }
     catch {
-        // Não interrompe a geração do currículo caso a foto falhe.
+        return false;
     }
-    if (qrDataUrl) {
-        doc.addImage(qrDataUrl, 'PNG', 166, 50, 26, 26);
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(8.3);
-        doc.setTextColor(40, 40, 40);
-        doc.text('QR do portfólio', 165, 79);
-        doc.link(166, 50, 26, 26, { url: PORTFOLIO_URL });
-    }
-    let y = drawPersonalInfoBlock(doc, snapshot, 14);
-    y = drawLinkLine(doc, 'E-mail', PERSONAL_INFO.email, `mailto:${PERSONAL_INFO.email}`, y, 14, 90);
-    y = drawLinkLine(doc, 'Portfólio', PORTFOLIO_URL, PORTFOLIO_URL, y + 1, 14, 90);
-    if (snapshot.linkedInUrl) {
-        y = drawLinkLine(doc, 'LinkedIn', snapshot.linkedInUrl, snapshot.linkedInUrl, y + 1, 14, 90);
-    }
-    y += 2;
-    y = drawSectionTitle(doc, 'QUALIFICAÇÕES', y);
-    y = drawParagraph(doc, 'Profissional orientado aos negócios com atuação como desenvolvedor full-stack e analista de dados, com experiência em aplicações web, páginas responsivas, automações, consolidação de planilhas, criação de dashboards e geração de relatórios. Possui vivência em montagem e manutenção de computadores, informática, instalação de sistemas e programas computacionais, além de perfil colaborativo e boa comunicação.', y, 14, 182, 10);
-    y += 4;
-    y = ensurePage(doc, y, 26);
-    y = drawSectionTitle(doc, 'FORMAÇÃO ACADÊMICA', y);
-    y = drawBulletList(doc, formationItems, y, 16, 176);
-    y += 3;
-    y = ensurePage(doc, y, 26);
-    y = drawSectionTitle(doc, 'EXPERIÊNCIAS PROFISSIONAIS', y);
-    y = drawBulletList(doc, professionalExperienceItems, y, 16, 176);
-    y += 3;
-    y = ensurePage(doc, y, 30);
-    y = drawSectionTitle(doc, 'IDIOMAS', y);
-    y = drawBulletList(doc, spokenLanguages, y, 16, 176);
-    y += 3;
-    y = ensurePage(doc, y, 26);
-    y = drawSectionTitle(doc, 'COMPETÊNCIAS COMPORTAMENTAIS', y);
-    y = drawBulletList(doc, snapshot.softSkills.length ? snapshot.softSkills : defaultSoftSkills, y, 16, 176);
-    y += 3;
-    y = ensurePage(doc, y, 26);
-    y = drawSectionTitle(doc, 'LEITURAS', y);
-    y = drawBulletList(doc, snapshot.readings.length ? snapshot.readings : defaultReadingItems, y, 16, 176);
-    y += 3;
-    y = ensurePage(doc, y, 56);
-    y = drawSectionTitle(doc, 'COMPETÊNCIAS TÉCNICAS', y);
-    const maxSkillItems = mode === 'curto' ? 3 : 4;
-    const skillColumns = [
-        { title: 'Linguagens', items: summarizeSkillItems(snapshot.languages, maxSkillItems) },
-        { title: 'Frameworks', items: summarizeSkillItems(snapshot.frameworks, maxSkillItems) },
-        { title: 'Bancos de dados', items: summarizeSkillItems(snapshot.databases, maxSkillItems) }
+}
+function getProfileImageElement() {
+    const selectors = [
+        '.topo-foto img',
+        '.foto-perfil img',
+        '.minha-foto img',
+        'img[src*="minhafoto"]',
+        'img[alt*="Daniel"]'
     ];
-    if (mode === 'completo') {
-        skillColumns.push({ title: 'Bibliotecas', items: summarizeSkillItems(snapshot.libraries, maxSkillItems) }, { title: 'Virtualização', items: summarizeSkillItems(snapshot.virtualization, maxSkillItems) });
+    for (const selector of selectors) {
+        const image = document.querySelector(selector);
+        if (image) {
+            return image;
+        }
     }
-    skillColumns.push({ title: 'Competências gerais', items: ['Pacote Office', 'Montagem e manutenção de computadores'] });
-    y = drawSkillColumns(doc, y, skillColumns);
-    y += 3;
-    y = ensurePage(doc, y, 44);
-    y = drawSectionTitle(doc, 'PROJETOS EM DESTAQUE', y);
-    y = drawProjects(doc, snapshot.projects, mode, y);
-    y += 3;
-    y = ensurePage(doc, y, 28);
-    y = drawSectionTitle(doc, 'CERTIFICAÇÕES', y);
-    y = drawBulletList(doc, snapshot.certifications, y, 16, 176);
-    y += 3;
-    y = ensurePage(doc, y, 24);
-    y = drawSectionTitle(doc, 'CONTATO PROFISSIONAL', y);
-    y = drawLinkLine(doc, 'E-mail', PERSONAL_INFO.email, `mailto:${PERSONAL_INFO.email}`, y, 16, 176);
-    y = drawLinkLine(doc, 'LinkedIn', snapshot.linkedInUrl || 'https://www.linkedin.com/in/daniel-costa-62681132b/', snapshot.linkedInUrl || 'https://www.linkedin.com/in/daniel-costa-62681132b/', y + 1, 16, 176);
-    y = drawLinkLine(doc, 'Portfólio', PORTFOLIO_URL, PORTFOLIO_URL, y + 1, 16, 176);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8.5);
-    doc.setTextColor(95, 95, 95);
-    doc.text(`Documento gerado automaticamente em ${generatedAt}.`, 14, 292);
-    drawCertificateAttachments(doc, certificateAttachmentData.filter((item) => Boolean(item)));
-    doc.save(fileName);
+    return null;
 }
-function buildFileBaseName(snapshot, mode) {
-    const slugName = (snapshot.name || 'curriculo')
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '');
-    const date = new Date();
-    const yyyy = String(date.getFullYear());
-    const mm = String(date.getMonth() + 1).padStart(2, '0');
-    const dd = String(date.getDate()).padStart(2, '0');
-    return `${slugName || 'curriculo'}-${mode}-${yyyy}-${mm}-${dd}`;
+async function resolveProfilePhotoDataUrl() {
+    const embeddedPhoto = getEmbeddedPhotoDataUrl();
+    if (embeddedPhoto.startsWith('data:image/')) {
+        return embeddedPhoto;
+    }
+    return imageElementToDataUrl(getProfileImageElement());
 }
-function chooseCurriculumMode() {
-    const useComplete = window.confirm('Clique em OK para currículo completo. Clique em Cancelar para currículo curto.');
-    return useComplete ? 'completo' : 'curto';
+function isPreparedCertificateAttachment(value) {
+    return Boolean(value?.dataUrl.startsWith('data:image/'));
 }
-async function generateCurriculum() {
-    const mode = chooseCurriculumMode();
-    const snapshot = collectPortfolioSnapshot();
-    const baseName = buildFileBaseName(snapshot, mode);
-    await drawCurriculumPdf(snapshot, mode, `${baseName}.pdf`);
-    return mode;
+function getFileNameFromPath(value) {
+    if (!value) {
+        return '';
+    }
+    try {
+        const url = new URL(value, window.location.href);
+        const encodedFileName = url.pathname.split('/').pop() || '';
+        return decodeURIComponent(encodedFileName);
+    }
+    catch {
+        const normalizedPath = value.replace(/\\/g, '/');
+        return normalizedPath.split('/').pop() || normalizedPath;
+    }
 }
-document.addEventListener('DOMContentLoaded', () => {
-    const trigger = document.getElementById('gerar-curriculo');
-    if (!trigger) {
+function normalizeCertificateAssetKey(value) {
+    const fileName = getFileNameFromPath(value) || value;
+    return fileName
+        .replace(/\.[a-z0-9]+$/i, '')
+        .replace(/[_-]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .normalize('NFC')
+        .toLocaleLowerCase('pt-BR');
+}
+async function prepareCertificateAttachment(attachment, embeddedByAssetKey) {
+    const assetKey = normalizeCertificateAssetKey(attachment.src);
+    const embedded = embeddedByAssetKey.get(assetKey);
+    // O anexo incorporado no build é a fonte mais confiável: não depende de
+    // lazy loading, posição na página, CORS ou disponibilidade do servidor local.
+    const dataUrl = embedded?.dataUrl
+        || await imageElementToDataUrl(attachment.imageElement)
+        || await loadImageAsDataUrl(attachment.src)
+        || '';
+    if (!dataUrl.startsWith('data:image/')) {
+        return null;
+    }
+    return {
+        title: attachment.title,
+        dataUrl,
+        format: detectImageFormat(dataUrl)
+    };
+}
+async function prepareCertificateAttachments(attachments) {
+    const embeddedByAssetKey = new Map(getEmbeddedCertificateAttachments().map((attachment) => [
+        normalizeCertificateAssetKey(attachment.title),
+        attachment
+    ]));
+    const results = await Promise.all(attachments.map((attachment) => prepareCertificateAttachment(attachment, embeddedByAssetKey)));
+    return results.filter(isPreparedCertificateAttachment);
+}
+function drawContactLinks(doc, snapshot, cursorY) {
+    let y = cursorY;
+    if (snapshot.email) {
+        const emailUrl = `mailto:${snapshot.email}`;
+        y = drawLinkLine(doc, 'E-mail', snapshot.email, emailUrl, y);
+    }
+    if (isValidWebUrl(snapshot.linkedInUrl)) {
+        y = drawLinkLine(doc, 'LinkedIn', snapshot.linkedInUrl, snapshot.linkedInUrl, y + 1);
+    }
+    if (isValidWebUrl(snapshot.githubUrl)) {
+        y = drawLinkLine(doc, 'GitHub', snapshot.githubUrl, snapshot.githubUrl, y + 1);
+    }
+    y = drawLinkLine(doc, 'Portfólio', PORTFOLIO_URL, PORTFOLIO_URL, y + 1);
+    return y;
+}
+function drawMainCurriculumContent(doc, snapshot, mode, photoDataUrl) {
+    let cursorY = DEFAULT_PAGE_TOP;
+    cursorY = drawPersonalInfoBlock(doc, snapshot, cursorY, photoDataUrl) + 5;
+    cursorY = ensurePage(doc, cursorY, 30);
+    cursorY = drawSectionTitle(doc, 'RESUMO PROFISSIONAL', cursorY);
+    cursorY = drawParagraph(doc, snapshot.summary || 'Profissional de tecnologia em formação, com foco em desenvolvimento de software e análise de dados.', cursorY) + 3;
+    cursorY = ensurePage(doc, cursorY, 26);
+    cursorY = drawSectionTitle(doc, 'FORMAÇÃO ACADÊMICA', cursorY);
+    const academicPeriod = getCurrentAcademicPeriod(6, 2026, 6);
+    cursorY = drawParagraph(doc, `Ciência da Computação — ${academicPeriod}º período em andamento.`, cursorY, 16, 178) + 3;
+    cursorY = ensurePage(doc, cursorY, 70);
+    cursorY = drawSectionTitle(doc, 'COMPETÊNCIAS TÉCNICAS', cursorY);
+    const maxItems = mode === 'curto' ? 6 : Number.MAX_SAFE_INTEGER;
+    cursorY = drawSkillColumns(doc, cursorY, [
+        { title: 'Linguagens', items: summarizeSkillItems(snapshot.languages, maxItems) },
+        { title: 'Frameworks', items: summarizeSkillItems(snapshot.frameworks, maxItems) },
+        { title: 'Bibliotecas', items: summarizeSkillItems(snapshot.libraries, maxItems) },
+        { title: 'Bancos de dados', items: summarizeSkillItems(snapshot.databases, maxItems) },
+        { title: 'Virtualização e ferramentas', items: summarizeSkillItems(snapshot.virtualization, maxItems) }
+    ]) + 3;
+    cursorY = ensurePage(doc, cursorY, 35);
+    cursorY = drawSectionTitle(doc, 'SOFT SKILLS', cursorY);
+    cursorY = drawBulletList(doc, mode === 'curto' ? snapshot.softSkills.slice(0, 6) : snapshot.softSkills, cursorY) + 3;
+    cursorY = ensurePage(doc, cursorY, 35);
+    cursorY = drawSectionTitle(doc, 'CERTIFICAÇÕES', cursorY);
+    cursorY = drawBulletList(doc, mode === 'curto' ? snapshot.certifications.slice(0, 8) : snapshot.certifications, cursorY) + 3;
+    cursorY = ensurePage(doc, cursorY, 45);
+    cursorY = drawSectionTitle(doc, 'PROJETOS', cursorY);
+    cursorY = drawProjects(doc, snapshot.projects, mode, cursorY) + 3;
+    if (mode === 'completo') {
+        cursorY = ensurePage(doc, cursorY, 35);
+        cursorY = drawSectionTitle(doc, 'LEITURAS E DESENVOLVIMENTO', cursorY);
+        cursorY = drawBulletList(doc, snapshot.readings, cursorY) + 3;
+    }
+    cursorY = ensurePage(doc, cursorY, 40);
+    cursorY = drawSectionTitle(doc, 'CONTATO', cursorY);
+    drawContactLinks(doc, snapshot, cursorY);
+}
+async function drawCurriculumPdf(mode = 'completo') {
+    const JsPdfConstructor = getJsPdf();
+    if (!JsPdfConstructor) {
+        notify('Não foi possível carregar o gerador de PDF. Atualize a página e tente novamente.', 'error');
         return;
     }
-    trigger.addEventListener('click', async (event) => {
-        event.preventDefault();
-        if (trigger.dataset.loading === 'true') {
+    const snapshot = collectPortfolioSnapshot();
+    if (!snapshot.email) {
+        notify('O e-mail de contato não foi encontrado no portfólio.', 'error');
+        return;
+    }
+    notify('Preparando o currículo em PDF...', 'info');
+    try {
+        const [photoDataUrl, certificateAttachments] = await Promise.all([
+            resolveProfilePhotoDataUrl(),
+            prepareCertificateAttachments(snapshot.certificateAttachments)
+        ]);
+        const doc = new JsPdfConstructor();
+        drawMainCurriculumContent(doc, snapshot, mode, photoDataUrl);
+        if (certificateAttachments.length > 0) {
+            drawCertificateAttachments(doc, certificateAttachments);
+        }
+        else {
+            console.warn('Nenhuma imagem de certificado válida foi encontrada para anexar ao PDF.');
+        }
+        const suffix = mode === 'curto' ? 'curto' : 'completo';
+        doc.save(`${PDF_FILE_PREFIX}-${suffix}.pdf`);
+        notify('Currículo gerado com sucesso.', 'success');
+    }
+    catch (error) {
+        console.error('Erro ao gerar currículo:', error);
+        notify('Não foi possível gerar o currículo. Verifique o console e tente novamente.', 'error');
+    }
+}
+function normalizeCurriculumMode(value) {
+    return value?.toLocaleLowerCase('pt-BR').includes('curto') ? 'curto' : 'completo';
+}
+function inferCurriculumMode(element) {
+    const explicitMode = element.dataset.curriculumMode || element.dataset.mode;
+    if (explicitMode) {
+        return normalizeCurriculumMode(explicitMode);
+    }
+    return normalizeCurriculumMode(`${element.id} ${element.textContent || ''}`);
+}
+function getCurriculumButtons() {
+    const selectors = [
+        '[data-curriculum-mode]',
+        '[data-action="gerar-curriculo"]',
+        '#gerar-curriculo',
+        '#gerar-curriculo-curto',
+        '#gerar-curriculo-completo',
+        '#baixar-curriculo',
+        '#baixar-curriculo-curto',
+        '#baixar-curriculo-completo',
+        '.gerar-curriculo',
+        '.baixar-curriculo'
+    ];
+    return Array.from(document.querySelectorAll(selectors.join(',')));
+}
+function bindCurriculumButtons() {
+    getCurriculumButtons().forEach((button) => {
+        if (button.dataset.curriculumBound === 'true') {
             return;
         }
-        trigger.dataset.loading = 'true';
-        const previousLabel = trigger.textContent;
-        trigger.textContent = 'Gerando currículo...';
-        try {
-            const mode = await generateCurriculum();
-            notify(`Currículo ${mode} gerado em .pdf.`, 'success');
-        }
-        catch {
-            notify('Não foi possível gerar o currículo agora. Tente novamente.', 'error');
-        }
-        finally {
-            trigger.dataset.loading = 'false';
-            trigger.textContent = previousLabel || 'Gerar currículo inteligente';
-        }
+        button.dataset.curriculumBound = 'true';
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            void drawCurriculumPdf(inferCurriculumMode(button));
+        });
     });
-});
+}
+const curriculumWindow = window;
+curriculumWindow.gerarCurriculo = drawCurriculumPdf;
+curriculumWindow.generateCurriculum = drawCurriculumPdf;
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindCurriculumButtons, { once: true });
+}
+else {
+    bindCurriculumButtons();
+}
