@@ -31,7 +31,7 @@ const TECHNOLOGY_TITLE_SELECTORS = [
 ];
 
 function cleanSummaryText(value: string | null | undefined): string {
-    return (value || '').replace(/\s+/g, ' ').trim();
+    return cvCleanText(value);
 }
 
 function countUniqueTextBySelectors(selectors: string[]): number {
@@ -77,27 +77,13 @@ function updateSummaryPanel(): void {
     setSummaryPanelValue('resumo-projetos', counts.projects);
 }
 
-function parseDate(value: string | null | undefined): Date | null {
-    if (!value) {
-        return null;
-    }
-
-    const parsed = new Date(value);
-    return Number.isNaN(parsed.getTime()) ? null : parsed;
-}
-
 function resolveLastUpdateDate(label: HTMLElement): { date: Date | null; source: LastUpdateSource } {
-    const manualDate = parseDate(label.dataset.manualDate);
-    if (manualDate) {
-        return { date: manualDate, source: 'manual' };
-    }
-
-    const gitDate = parseDate(window.__PORTFOLIO_LAST_COMMIT_DATE__ || window.__PORTFOLIO_BUILD_DATE__);
-    if (gitDate) {
-        return { date: gitDate, source: 'git' };
-    }
-
-    return { date: parseDate(document.lastModified), source: 'document' };
+    return cvResolveLastUpdateDateFromInputs(
+        label.dataset.manualDate,
+        window.__PORTFOLIO_LAST_COMMIT_DATE__,
+        window.__PORTFOLIO_BUILD_DATE__,
+        document.lastModified
+    );
 }
 
 async function fetchGitHubMainCommitDate(): Promise<Date | null> {
@@ -113,7 +99,7 @@ async function fetchGitHubMainCommitDate(): Promise<Date | null> {
         }
 
         const payload = await response.json() as GitHubCommitResponse;
-        return parseDate(payload.commit?.committer?.date);
+        return cvParseDate(payload.commit?.committer?.date);
     } catch {
         return null;
     }
@@ -156,23 +142,16 @@ async function updateLastUpdatedLabel(): Promise<void> {
     label.setAttribute('data-update-source', 'github');
 }
 
-function getCurrentAcademicSemester(baseSemester: number, baseYear: number, baseMonth: number): number {
-    const now = new Date();
-    const totalMonthsDiff = (now.getFullYear() - baseYear) * 12 + (now.getMonth() - baseMonth);
-    const semesterSteps = Math.max(0, Math.floor(totalMonthsDiff / 6));
-    return Math.min(10, baseSemester + semesterSteps);
-}
-
 function updateCurrentSemesterLabel(): void {
     const label = document.getElementById('semestre-atual');
     if (!label) {
         return;
     }
 
-    const baseSemester = Number.parseInt(label.dataset.baseSemester || '5', 10);
-    const baseYear = Number.parseInt(label.dataset.baseYear || '2026', 10);
-    const baseMonth = Number.parseInt(label.dataset.baseMonth || '0', 10);
-    const currentSemester = getCurrentAcademicSemester(baseSemester, baseYear, baseMonth);
+    const baseSemester = cvParseAcademicBaseValue(label.dataset.baseSemester, 5);
+    const baseYear = cvParseAcademicBaseValue(label.dataset.baseYear, 2026);
+    const baseMonth = cvParseAcademicBaseValue(label.dataset.baseMonth, 0);
+    const currentSemester = cvComputeAcademicPeriod(baseSemester, baseYear, baseMonth);
 
     label.textContent = `Semestre atual: ${currentSemester}º semestre`;
 }
