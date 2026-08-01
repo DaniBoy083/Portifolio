@@ -31,21 +31,22 @@ GERACAO AUTOMATICA DE CURRICULO
 - O PDF gerado segue layout estruturado de curriculo (cabecalho, secoes e hierarquia visual) inspirado no modelo da pasta docs.
 - O PDF inclui anexos fotograficos dos certificados ao final do documento, usando as imagens da secao Certificados da pagina.
 - Modo hard de anexos: no build, as imagens da pasta img/Certificados sao embutidas em base64 e priorizadas no PDF.
-- Ao clicar, o sistema pergunta o modo:
-	- OK: curriculo completo
-	- Cancelar: curriculo curto
+- Modo atual de geracao:
+	- Botao principal: curriculo completo
+	- Modo curto: disponivel via chamada manual em runtime (window.gerarCurriculo('curto'))
 - Fontes usadas no gerador:
-	- Dados do proprio workspace (nome, resumo, formacao, skills, projetos e certificacoes exibidos na pagina)
-	- GitHub publico (usuario, seguidores, quantidade de repositorios e repositorios em destaque)
-	- LinkedIn (link publico presente na pagina)
+	- Dados do proprio workspace (nome, resumo, formacao, skills, projetos, leituras e certificacoes exibidos na pagina)
+	- Links publicos de LinkedIn e GitHub exibidos no topo da pagina
+	- Foto de perfil e anexos de certificados embutidos em dist/build-meta.js durante o prebuild
 - Saida: download local de um arquivo por geracao:
-	- nome-modo-aaaa-mm-dd.pdf
-- Observacao: a API publica do LinkedIn nao e consultada diretamente; o gerador referencia o link do perfil e permite complemento manual no documento final.
+	- curriculo-daniel-costa-completo.pdf
+	- curriculo-daniel-costa-curto.pdf
+- Observacao: no estado atual, o gerador nao consulta metricas externas (seguidores, repositorios ou dados enriquecidos de perfis). Ele usa os dados renderizados no proprio portfolio.
 - Modo de emergencia da foto: o build embute img/Placeholders/minhafoto.(jpg|jpeg|png|webp) em base64 dentro de dist/build-meta.js para fallback 100% local no PDF.
 
 Build:
-1. Execute npm install
-2. Execute npm run validate
+1. Execute npm ci
+2. Execute npm test
 3. Execute npm run build
 
 O build agora gera automaticamente o arquivo dist/build-meta.js antes da compilacao TypeScript.

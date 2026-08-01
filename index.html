@@ -38,7 +38,7 @@
             </div>
             <div class="topo-acoes">
                 <a href="mailto:danielcostacarvalhomartins06@gmail.com">Entre em contato</a>
-                <a href="#" id="gerar-curriculo" class="botao-de-download">Gerar curriculo inteligente</a>
+                <button type="button" id="gerar-curriculo" class="botao-de-download">Gerar curriculo inteligente</button>
                 <a href="https://www.linkedin.com/in/daniel-costa-62681132b/">Linkedin.com</a>
                 <a href="https://github.com/DaniBoy083">GitHub.com</a>
             </div>
@@ -568,6 +568,7 @@
             <input id="contact-name" name="name" type="text" required>
             <label for="contact-subject">Assunto</label>
             <input id="contact-subject" name="subject" type="text">
+            <input id="contact-company" class="contato-honeypot" name="company" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
             <label for="contact-message">Mensagem</label>
             <textarea id="contact-message" name="message" rows="6" required></textarea>
             <button type="submit">Enviar</button>

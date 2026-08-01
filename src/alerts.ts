@@ -1,4 +1,3 @@
-type ToastType = 'info' | 'success' | 'error';
 type ToastOrigin = 'default' | 'welcome';
 
 const WELCOME_TOASTS_SEEN_KEY = 'portfolio-welcome-toasts-seen';
@@ -63,7 +62,7 @@ function shouldShowWelcomeMessages(): boolean {
 
 function showToast(
     message: string,
-    type: ToastType = 'info',
+    type: ToastKind = 'info',
     duration = 3800,
     origin: ToastOrigin = 'default'
 ): void {

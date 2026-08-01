@@ -5,8 +5,10 @@
   "scripts": {
     "prebuild": "node scripts/generate-build-meta.cjs",
     "validate": "node scripts/validate-markup.cjs",
-    "build": "tsc",
-    "watch": "npm run prebuild && tsc -w"
+    "typecheck": "tsc --noEmit",
+    "build": "npm run validate && tsc",
+    "watch": "npm run prebuild && tsc -w",
+    "test": "npm run validate && npm run typecheck"
   },
   "devDependencies": {
     "typescript": "^5.2.2"

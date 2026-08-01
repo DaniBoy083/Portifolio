@@ -1,4 +1,3 @@
-type ToastKind = 'info' | 'success' | 'error';
 type CurriculumMode = 'curto' | 'completo';
 
 interface ProjectSummary {
@@ -564,6 +563,21 @@ function getCurrentAcademicPeriod(basePeriod: number, baseYear: number, baseMont
     return Math.min(10, basePeriod + semesterSteps);
 }
 
+function parseAcademicBaseValue(value: string | undefined, fallback: number): number {
+    const parsed = Number.parseInt(value || '', 10);
+    return Number.isNaN(parsed) ? fallback : parsed;
+}
+
+function getAcademicBaseFromPage(): { period: number; year: number; month: number } {
+    const semesterLabel = document.getElementById('semestre-atual');
+
+    return {
+        period: parseAcademicBaseValue(semesterLabel?.dataset.baseSemester, 5),
+        year: parseAcademicBaseValue(semesterLabel?.dataset.baseYear, 2026),
+        month: parseAcademicBaseValue(semesterLabel?.dataset.baseMonth, 0)
+    };
+}
+
 function drawPersonalInfoBlock(
     doc: JsPdfInstance,
     snapshot: PortfolioSnapshot,
@@ -782,10 +796,11 @@ function drawMainCurriculumContent(
 
     cursorY = ensurePage(doc, cursorY, 26);
     cursorY = drawSectionTitle(doc, 'FORMAÇÃO ACADÊMICA', cursorY);
-    const academicPeriod = getCurrentAcademicPeriod(6, 2026, 6);
+    const academicBase = getAcademicBaseFromPage();
+    const academicPeriod = getCurrentAcademicPeriod(academicBase.period, academicBase.year, academicBase.month);
     cursorY = drawParagraph(
         doc,
-        `Ciência da Computação — ${academicPeriod}º período em andamento.`,
+        `Ciência da Computação — ${academicPeriod}º semestre em andamento.`,
         cursorY,
         16,
         178
